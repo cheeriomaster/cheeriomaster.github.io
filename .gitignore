@@ -1,0 +1,8 @@
+.DS_Store
+__pycache__/
+*.pyc
+
+# 暂不上 GitHub 的页面（test=小红书预览稿；trip-3f9a72=旧行程；muse=依赖本机服务端）
+test/
+trip-3f9a72/
+muse-7c4a91/

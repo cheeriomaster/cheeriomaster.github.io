@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>高效有序，只是对死亡焦虑的防御_排版_留白禅意风(zen-whitespace) · 公众号排版预览</title>
+<style>
+  body{margin:0;background:#eef0f2;font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;-webkit-text-size-adjust:100%;}
+  .gzh-toolbar{position:fixed;top:0;left:0;right:0;height:54px;background:#ffffff;box-shadow:0 1px 10px rgba(0,0,0,.08);display:flex;align-items:center;justify-content:space-between;padding:0 16px;z-index:99;}
+  .gzh-hint{font-size:13px;color:#6b7280;line-height:1.4;}
+  .gzh-hint b{color:#111827;}
+  .gzh-copy{background:#059669;color:#fff;border:0;border-radius:9px;padding:10px 20px;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 3px 10px rgba(5,150,105,.28);white-space:nowrap;transition:transform .08s,background .15s;}
+  .gzh-copy:hover{background:#047857;}
+  .gzh-copy:active{transform:translateY(1px);}
+  .gzh-toast{position:fixed;top:66px;left:50%;transform:translateX(-50%);background:#111827;color:#fff;padding:11px 20px;border-radius:10px;font-size:14px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .25s;z-index:100;box-shadow:0 6px 20px rgba(0,0,0,.25);max-width:88vw;text-align:center;}
+  .gzh-toast.show{opacity:1;}
+  .gzh-stage{max-width:700px;margin:78px auto 64px;padding:0 8px;}
+  @media(max-width:520px){.gzh-hint{max-width:150px;}}
+</style>
+</head>
+<body>
+<div class="gzh-toolbar">
+  <span class="gzh-hint">👇 下方是排版效果 · 点右侧 <b>复制</b> 直接粘到公众号</span>
+  <button class="gzh-copy" id="gzhCopyBtn" onclick="gzhCopy()">📋 复制到公众号</button>
+</div>
+<div class="gzh-toast" id="gzhToast"></div>
+<div class="gzh-stage">
+  <div id="gzh-content">
+<section style="max-width: 677px;margin: 0 auto;background: #FFFFFF;font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;color: #525252;line-height: 1.9;letter-spacing: 0.3px;overflow-x: hidden;">
+
+  <section style="margin: 32px 16px 48px;padding: 40px 24px;border-top: 1px solid #E8E8E8;border-bottom: 1px solid #E8E8E8;text-align: center;">
+    <p style="font-family: 'Noto Serif SC', Georgia, 'Times New Roman', serif;font-size: 19px;font-weight: 600;color: #2B2B2B;margin: 0 0 28px;line-height: 1.85;letter-spacing: 0.8px;">
+      <span leaf="">其实这个题目不言而喻。</span>
+    </p>
+    <p style="font-size: 12px;color: #A3A3A3;margin: 0;letter-spacing: 1.5px;">
+      <span leaf="">—— {{作者名}}</span>
+    </p>
+  </section>
+
+  <section style="padding: 0 16px 48px;">
+    <p style="font-size: 11px;color: #A3A3A3;margin: 0 0 20px;letter-spacing: 2px;text-transform: uppercase;">
+      <span leaf="">本文脉络</span>
+    </p>
+    <section style="border-top: 1px solid #E8E8E8;">
+      <section style="display: flex;">
+        <section style="flex: 1;padding: 18px 12px 18px 0;border-bottom: 1px solid #E8E8E8;border-right: 1px solid #E8E8E8;margin-right: 16px;">
+          <p style="font-size: 11px;color: #4A5D52;font-weight: 600;margin: 0 0 6px;letter-spacing: 1px;"><span leaf="">01</span></p>
+          <p style="font-size: 13px;color: #2B2B2B;margin: 0;font-weight: 500;line-height: 1.5;"><span leaf="">如果生命是无限的</span></p>
+        </section>
+        <section style="flex: 1;padding: 18px 12px 18px 0;border-bottom: 1px solid #E8E8E8;border-right: 1px solid #E8E8E8;margin-right: 16px;">
+          <p style="font-size: 11px;color: #4A5D52;font-weight: 600;margin: 0 0 6px;letter-spacing: 1px;"><span leaf="">02</span></p>
+          <p style="font-size: 13px;color: #2B2B2B;margin: 0;font-weight: 500;line-height: 1.5;"><span leaf="">因为会死，才有轻重</span></p>
+        </section>
+        <section style="flex: 1;padding: 18px 0 18px 0;border-bottom: 1px solid #E8E8E8;">
+          <p style="font-size: 11px;color: #4A5D52;font-weight: 600;margin: 0 0 6px;letter-spacing: 1px;"><span leaf="">03</span></p>
+          <p style="font-size: 13px;color: #2B2B2B;margin: 0;font-weight: 500;line-height: 1.5;"><span leaf="">高效只是一种感觉</span></p>
+        </section>
+      </section>
+    </section>
+  </section>
+
+  <section style="padding: 0 16px;">
+    <section style="height: 1px;background: #E8E8E8;margin: 64px 0 0;">
+      <span leaf=""><br></span>
+    </section>
+  </section>
+
+  <section style="margin-top: 64px;margin-bottom: 32px;padding: 0 16px;">
+    <p style="font-size: 10px;color: #4A5D52;font-weight: 600;letter-spacing: 4px;margin: 0 0 10px;text-transform: uppercase;">
+      <span leaf="">01 · CHAPTER ONE</span>
+    </p>
+    <h3 style="font-family: 'Noto Serif SC', Georgia, 'Times New Roman', serif;font-size: 22px;font-weight: 700;color: #2B2B2B;margin: 0 0 16px;letter-spacing: 0.5px;line-height: 1.4;">
+      <span leaf="">如果生命是无限的</span>
+    </h3>
+    <section style="width: 40px;height: 2px;background: #4A5D52;">
+      <span leaf=""><br></span>
+    </section>
+  </section>
+
+  <p style="margin-bottom: 26px;font-size: 15px;line-height: 1.9;text-align: justify;color: #525252;padding: 0 16px;">
+    <span leaf="">设想我们有无限的生命：</span>
+    <span style="border-bottom: 1.5px solid #B5C8BC;font-weight: 500;"><span leaf="">细胞不会衰老，认知不会下降，人也不会死</span></span>
+    <span leaf="">。时间用不完，任何事都可以去做——那我们就可以花一百年、一万年，看一根草从种子里冒出来，再花十万年，看它长成一棵参天大树。</span>
+  </p>
+
+  <p style="margin-bottom: 26px;font-size: 15px;line-height: 1.9;text-align: justify;color: #525252;padding: 0 16px;">
+    <span leaf="">我们也不必去学 AI 技能、不必去学视频剪辑。不用着急去做工作，不用急着早上吃完饭、九点赶到公司打卡，打完卡下班再赶着练健身。读书、睡觉——所有这一切，我们都不必赶着做，</span>
+    <span style="border-bottom: 1.5px solid #B5C8BC;font-weight: 500;"><span leaf="">因为我们没有了死亡焦虑</span></span>
+    <span leaf="">。</span>
+  </p>
+
+  <p style="margin-bottom: 26px;font-size: 15px;line-height: 1.9;text-align: justify;color: #525252;padding: 0 16px;">
+    <span leaf="">我们只是活着、存在着。没有一件事需要我们着急，</span>
+    <span style="border-bottom: 1.5px solid #B5C8BC;font-weight: 500;"><span leaf="">因为生命是无限的</span></span>
+    <span leaf="">。</span>
+  </p>
+
+  <p style="margin-bottom: 26px;font-size: 15px;line-height: 1.9;text-align: justify;color: #525252;padding: 0 16px;">
+    <span leaf="">可真的去体会这种感觉，只会觉得无聊。</span>
+    <span style="border-bottom: 1.5px solid #B5C8BC;font-weight: 500;"><span leaf="">好像任何一件事都没有意义了</span></span>
+    <span leaf="">。</span>
+  </p>
+
+  <section style="margin: 0 16px 8px;border: 1px solid #E8E8E8;">
+    <section style="margin: 0;overflow: hidden;">
+      <span leaf=""><img src="https://yanghuidong.asia/essay-death-anxiety/img/seed-and-tree.jpg" style="max-width: 100%;height: auto;display: block;margin: 0 auto;"></span>
+    </section>
+  </section>
+  <p style="font-size: 12px;color: #A3A3A3;text-align: center;margin: 8px 16px 32px;letter-spacing: 0.5px;">
+    <span leaf="">— 一粒种子，与一棵参天大树</span>
+  </p>
+
+  <p style="margin-bottom: 26px;font-size: 15px;line-height: 1.9;text-align: justify;color: #525252;padding: 0 16px;">
+    <span leaf="">时间一旦无限，世界就被摊平：</span>
+    <span style="border-bottom: 1.5px solid #B5C8BC;font-weight: 500;"><span leaf="">没有轻重缓急</span></span>
+    <span leaf="">，什么都可以等到想做的时候再做。所有事情都有无限的可能，一件事只要发生，就必然有结果。</span>
+  </p>
+
+  <p style="margin-bottom: 26px;font-size: 15px;line-height: 1.9;text-align: justify;color: #525252;padding: 0 16px;">
+    <span leaf="">哪怕我是世界上最笨、最蠢、最不会画画的人，我也总有无限的时间成为大师；哪怕我是世界上最无知、最文盲、最没有教养的人，我也能从野蛮人变成无所不知的大学者。</span>
+    <span style="border-bottom: 1.5px solid #B5C8BC;font-weight: 500;"><span leaf="">一切知识、一切技能，都失去了意义</span></span>
+    <span leaf="">——因为我们不会死。</span>
+  </p>
+
+  <section style="padding: 0 16px;">
+    <section style="height: 1px;background: #E8E8E8;margin: 64px 0 0;">
+      <span leaf=""><br></span>
+    </section>
+  </section>
+
+  <section style="margin-top: 64px;margin-bottom: 32px;padding: 0 16px;">
+    <p style="font-size: 10px;color: #4A5D52;font-weight: 600;letter-spacing: 4px;margin: 0 0 10px;text-transform: uppercase;">
+      <span leaf="">02 · CHAPTER TWO</span>
+    </p>
+    <h3 style="font-family: 'Noto Serif SC', Georgia, 'Times New Roman', serif;font-size: 22px;font-weight: 700;color: #2B2B2B;margin: 0 0 16px;letter-spacing: 0.5px;line-height: 1.4;">
+      <span leaf="">因为会死，才有轻重</span>
+    </h3>
+    <section style="width: 40px;height: 2px;background: #4A5D52;">
+      <span leaf=""><br></span>
+    </section>
+  </section>
+
+  <p style="margin-bottom: 26px;font-size: 15px;line-height: 1.9;text-align: justify;font-weight: 600;color: #2B2B2B;padding: 0 16px;">
+    <span leaf="">但正因为我们会死，我们才需要在有限的时间里，</span>
+    <span style="background: linear-gradient(180deg, transparent 60%, #D6E4DC 60%);"><span leaf="">挑出对生命重要的事，一件一件做完</span></span>
+    <span leaf="">。</span>
+  </p>
+
+  <p style="margin-bottom: 26px;font-size: 15px;line-height: 1.9;text-align: justify;color: #525252;padding: 0 16px;">
+    <span leaf="">比如现在这一段人生里，也许</span>
+    <span style="border-bottom: 1.5px solid #B5C8BC;font-weight: 500;"><span leaf="">恢复身体和家人陪伴是最重要的</span></span>
+    <span leaf="">，工作只是附加品；前一段人生里，满足欲望也许是最重要的，亲情友情反倒成了附加品。</span>
+  </p>
+
+  <p style="margin-bottom: 26px;font-size: 15px;line-height: 1.9;text-align: justify;color: #525252;padding: 0 16px;">
+    <span leaf="">此刻最重要的，也许就是把这段话说完、把这段文字记下来——因为</span>
+    <span style="border-bottom: 1.5px solid #B5C8BC;font-weight: 500;"><span leaf="">时间是我唯一拥有的货币</span></span>
+    <span leaf="">，我只能把它花在这里。</span>
+  </p>
+
+  <section style="margin: 0 16px 8px;border: 1px solid #E8E8E8;">
+    <section style="margin: 0;overflow: hidden;">
+      <span leaf=""><img src="https://yanghuidong.asia/essay-death-anxiety/img/hourglass-palm.jpg" style="max-width: 100%;height: auto;display: block;margin: 0 auto;"></span>
+    </section>
+  </section>
+  <p style="font-size: 12px;color: #A3A3A3;text-align: center;margin: 8px 16px 32px;letter-spacing: 0.5px;">
+    <span leaf="">— 时间是我唯一拥有的货币</span>
+  </p>
+
+  <section style="padding: 0 16px;">
+    <section style="height: 1px;background: #E8E8E8;margin: 64px 0 0;">
+      <span leaf=""><br></span>
+    </section>
+  </section>
+
+  <section style="margin-top: 64px;margin-bottom: 32px;padding: 0 16px;">
+    <p style="font-size: 10px;color: #4A5D52;font-weight: 600;letter-spacing: 4px;margin: 0 0 10px;text-transform: uppercase;">
+      <span leaf="">03 · CHAPTER THREE</span>
+    </p>
+    <h3 style="font-family: 'Noto Serif SC', Georgia, 'Times New Roman', serif;font-size: 22px;font-weight: 700;color: #2B2B2B;margin: 0 0 16px;letter-spacing: 0.5px;line-height: 1.4;">
+      <span leaf="">高效只是一种感觉</span>
+    </h3>
+    <section style="width: 40px;height: 2px;background: #4A5D52;">
+      <span leaf=""><br></span>
+    </section>
+  </section>
+
+  <p style="margin-bottom: 26px;font-size: 15px;line-height: 1.9;text-align: justify;color: #525252;padding: 0 16px;">
+    <span leaf="">也正因如此，我们想建立一种高效的生活方式，想把尽可能多的事，在最短的时间里做成。</span>
+  </p>
+
+  <p style="margin-bottom: 26px;font-size: 15px;line-height: 1.9;text-align: justify;color: #525252;padding: 0 16px;">
+    <span leaf="">可</span>
+    <span style="border-bottom: 1.5px solid #B5C8BC;font-weight: 500;"><span leaf="">所谓的高效，只是一种感觉</span></span>
+    <span leaf="">。很多时候你以为自己做了很多事，其实大多数事都是不必要的。结果和意义，是在安静里自己涌现出来的：安静地做一件正确的事，有当下的体会，那一刻的效率，</span>
+    <span style="border-bottom: 1.5px solid #B5C8BC;font-weight: 500;"><span leaf="">是所谓项目管理的十亿倍</span></span>
+    <span leaf="">。</span>
+  </p>
+
+  <p style="margin-bottom: 26px;font-size: 15px;line-height: 1.9;text-align: justify;color: #525252;padding: 0 16px;">
+    <span leaf="">然而为了减轻对死亡的焦虑，我们告诉自己：我在有限的时间里完成了很多事情——</span>
+    <span style="border-bottom: 1.5px solid #B5C8BC;font-weight: 500;"><span leaf="">用这个来逃避当下</span></span>
+    <span leaf="">。</span>
+  </p>
+
+  <section style="margin: 40px 16px;padding: 36px 20px;border-top: 1px solid #E8E8E8;border-bottom: 1px solid #E8E8E8;text-align: center;">
+    <p style="font-family: 'Noto Serif SC', Georgia, 'Times New Roman', serif;font-size: 17px;font-weight: 600;color: #2B2B2B;margin: 0;line-height: 1.9;letter-spacing: 0.8px;">
+      <span leaf="">「在想高效的时候，恰恰背离了当下，也失去了效率的意义。」</span>
+    </p>
+  </section>
+
+  <section style="margin: 0 16px 8px;border: 1px solid #E8E8E8;">
+    <section style="margin: 0;overflow: hidden;">
+      <span leaf=""><img src="https://yanghuidong.asia/essay-death-anxiety/img/sitting-lamp.jpg" style="max-width: 100%;height: auto;display: block;margin: 0 auto;"></span>
+    </section>
+  </section>
+  <p style="font-size: 12px;color: #A3A3A3;text-align: center;margin: 8px 16px 32px;letter-spacing: 0.5px;">
+    <span leaf="">— 安静地做一件正确的事</span>
+  </p>
+
+  <section style="padding: 0 16px;">
+    <section style="height: 1px;background: #E8E8E8;margin: 64px 0 0;">
+      <span leaf=""><br></span>
+    </section>
+  </section>
+
+  <section style="margin-top: 64px;margin-bottom: 32px;padding: 0 16px;">
+    <p style="font-size: 10px;color: #4A5D52;font-weight: 600;letter-spacing: 4px;margin: 0 0 10px;text-transform: uppercase;">
+      <span leaf="">∞ · POSTSCRIPT</span>
+    </p>
+    <h3 style="font-family: 'Noto Serif SC', Georgia, 'Times New Roman', serif;font-size: 22px;font-weight: 700;color: #2B2B2B;margin: 0 0 16px;letter-spacing: 0.5px;line-height: 1.4;">
+      <span leaf="">不是逃避，是利用</span>
+    </h3>
+    <section style="width: 40px;height: 2px;background: #4A5D52;">
+      <span leaf=""><br></span>
+    </section>
+  </section>
+
+  <p style="margin-bottom: 26px;font-size: 15px;line-height: 1.9;text-align: justify;color: #525252;padding: 0 16px;">
+    <span leaf="">我们要做的</span>
+    <span style="border-bottom: 1.5px solid #B5C8BC;font-weight: 500;"><span leaf="">不是逃避这种焦虑，而是利用它</span></span>
+    <span leaf="">，帮我们更好地创造。</span>
+  </p>
+
+  <section style="padding: 0 16px;">
+    <section style="text-align: center;margin: 48px 0 40px;">
+      <section style="display: flex;align-items: center;justify-content: center;">
+        <span style="height: 1px;width: 48px;background: #E8E8E8;margin-right: 16px;"></span>
+        <span style="font-size: 10px;color: #A3A3A3;letter-spacing: 4px;font-weight: 400;"><span leaf="">END</span></span>
+        <span style="height: 1px;width: 48px;background: #E8E8E8;margin-left: 16px;"></span>
+      </section>
+    </section>
+  </section>
+
+  <section style="padding: 0 16px 40px;">
+    <p style="margin-bottom: 26px;font-size: 15px;line-height: 1.9;text-align: justify;color: #525252;">
+      <span leaf="">我是 {{作者名}}，{{一句话简介}}。</span>
+    </p>
+    <p style="margin-bottom: 26px;font-size: 15px;line-height: 1.9;text-align: justify;color: #525252;">
+      <span leaf="">如果你觉得今天这篇有收获，欢迎</span>
+      <strong style="color: #4A5D52;"><span leaf="">点赞、在看、转发</span></strong>
+      <span leaf="">三连，我们下篇见。</span>
+    </p>
+  </section>
+
+  <section style="padding: 0 16px;">
+    <p style="font-size: 11px;color: #A3A3A3;margin: 64px 0 18px;letter-spacing: 2px;text-transform: uppercase;">
+      <span leaf="">过往文章</span>
+    </p>
+  </section>
+
+  <section style="margin: 0 16px;border-top: 1px solid #E8E8E8;">
+    <section style="padding: 18px 0;border-bottom: 1px solid #E8E8E8;">
+      <p style="font-size: 11px;color: #A3A3A3;margin: 0 0 8px;letter-spacing: 1px;"><span leaf="">2026-09-26</span></p>
+      <p style="font-family: 'Noto Serif SC', Georgia, 'Times New Roman', serif;font-size: 16px;font-weight: 600;color: #2B2B2B;margin: 0 0 6px;line-height: 1.6;"><span leaf="">我所害怕的死亡，并不是真的死亡</span></p>
+      <p style="font-size: 13px;color: #A3A3A3;margin: 0;line-height: 1.8;"><span leaf="">死亡对于我来说，就是少收一本作业。</span></p>
+    </section>
+    <section style="padding: 18px 0;border-bottom: 1px solid #E8E8E8;">
+      <p style="font-size: 11px;color: #A3A3A3;margin: 0 0 8px;letter-spacing: 1px;"><span leaf="">2026-10-06</span></p>
+      <p style="font-family: 'Noto Serif SC', Georgia, 'Times New Roman', serif;font-size: 16px;font-weight: 600;color: #2B2B2B;margin: 0 0 6px;line-height: 1.6;"><span leaf="">我在 35 岁才找到生命刚刚开始的样子</span></p>
+      <p style="font-size: 13px;color: #A3A3A3;margin: 0;line-height: 1.8;"><span leaf="">重要的不是做什么，而是以什么方式存在。</span></p>
+    </section>
+    <section style="padding: 18px 0;border-bottom: 1px solid #E8E8E8;">
+      <p style="font-size: 11px;color: #A3A3A3;margin: 0 0 8px;letter-spacing: 1px;"><span leaf="">2026-09-22</span></p>
+      <p style="font-family: 'Noto Serif SC', Georgia, 'Times New Roman', serif;font-size: 16px;font-weight: 600;color: #2B2B2B;margin: 0 0 6px;line-height: 1.6;"><span leaf="">我的超能力是孤独</span></p>
+      <p style="font-size: 13px;color: #A3A3A3;margin: 0;line-height: 1.8;"><span leaf="">只有在看书的时候才会相信，原来我不是唯一的，也不是无助的。</span></p>
+    </section>
+    <section style="padding: 18px 0;border-bottom: 1px solid #E8E8E8;">
+      <p style="font-size: 11px;color: #A3A3A3;margin: 0 0 8px;letter-spacing: 1px;"><span leaf="">2026-09-22</span></p>
+      <p style="font-family: 'Noto Serif SC', Georgia, 'Times New Roman', serif;font-size: 16px;font-weight: 600;color: #2B2B2B;margin: 0 0 6px;line-height: 1.6;"><span leaf="">钱会把一件事物的价值坍缩</span></p>
+      <p style="font-size: 13px;color: #A3A3A3;margin: 0;line-height: 1.8;"><span leaf="">它被这样的标签限制住，而因此坍缩，实在是非常可惜。</span></p>
+    </section>
+  </section>
+
+</section>
+  </div>
+</div>
+<script>
+  function gzhShowToast(msg){
+    var t=document.getElementById('gzhToast');
+    t.textContent=msg;t.classList.add('show');
+    clearTimeout(t._timer);
+    t._timer=setTimeout(function(){t.classList.remove('show');},2800);
+  }
+  function gzhCopy(){
+    var el=document.getElementById('gzh-content');
+    // 选中渲染后的富文本节点并复制（等价于手动 Ctrl+A / Ctrl+C，保留全部样式）
+    var range=document.createRange();
+    range.selectNodeContents(el);
+    var sel=window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    var ok=false;
+    try{ok=document.execCommand('copy');}catch(e){ok=false;}
+    sel.removeAllRanges();
+    var btn=document.getElementById('gzhCopyBtn');
+    if(ok){
+      gzhShowToast('✅ 已复制！去公众号编辑器按 Ctrl/⌘+V 粘贴即可');
+      var old=btn.textContent;btn.textContent='✅ 已复制';
+      setTimeout(function(){btn.textContent=old;},2200);
+    }else{
+      gzhShowToast('⚠ 自动复制失败，请手动全选(Ctrl/⌘+A)再复制(Ctrl/⌘+C)');
+    }
+  }
+</script>
+</body>
+</html>

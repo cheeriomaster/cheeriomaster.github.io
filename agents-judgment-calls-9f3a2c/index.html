@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>AI 智能体如何影响专家的判断决定 · 逐段对照</title>
+<style>
+  :root{
+    --paper:#FAFAF8; --ink:#1A1A1A; --muted:#6B6B66; --accent:#4A5D52;
+    --line:#E8E6E1; --soft:#F2F1EC;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--paper);color:var(--ink);
+    font-family:"Songti SC","Noto Serif CJK SC",Georgia,serif;
+    line-height:1.85;font-size:17px}
+  .wrap{max-width:760px;margin:0 auto;padding:56px 22px 96px}
+  header{border-bottom:1px solid var(--line);padding-bottom:28px;margin-bottom:36px}
+  .kicker{font-size:13px;letter-spacing:.12em;color:var(--muted);margin-bottom:14px}
+  h1{font-size:clamp(22px,5.4vw,32px);line-height:1.45;margin:0 0 10px;font-weight:600}
+  .sub{color:var(--muted);font-size:16px;margin:0 0 18px}
+  .meta{font-size:14px;color:var(--muted);line-height:2}
+  .meta a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--line)}
+  .note{margin-top:18px;background:var(--soft);border-left:3px solid var(--accent);
+    padding:14px 16px;font-size:14.5px;color:#3A3A36;line-height:1.8}
+  .lede{font-size:18.5px;line-height:1.9;padding:0 0 8px;margin:0 0 34px}
+  .lede b{font-weight:600;background:linear-gradient(transparent 62%, #FDE68A 62%)}
+  h2{font-size:19px;margin:52px 0 6px;padding-top:18px;border-top:1px solid var(--line);font-weight:600}
+  h3{font-size:16px;margin:34px 0 4px;color:var(--accent);font-weight:600}
+  .blk{margin:26px 0 0}
+  .en{font-family:Georgia,"Times New Roman",serif;font-size:15px;line-height:1.75;
+    color:var(--muted);margin:0 0 10px;padding-left:14px;border-left:2px solid var(--line)}
+  .zh{margin:0}
+  ul{margin:10px 0 0;padding-left:1.2em}
+  li{margin:6px 0}
+  .tag{display:inline-block;font-size:13px;color:var(--accent);background:var(--soft);
+    padding:2px 8px;border-radius:3px;margin-bottom:6px}
+  footer{margin-top:64px;padding-top:22px;border-top:1px solid var(--line);
+    font-size:13.5px;color:var(--muted);line-height:1.9}
+  footer a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--line)}
+  @media(max-width:480px){body{font-size:16px}.wrap{padding:40px 18px 72px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker">ANTHROPIC RESEARCH · 2026-10-27</div>
+  <h1>AI 智能体如何影响专家的判断决定</h1>
+  <p class="sub">Who’s Aligned to Whom? How AI Agents Shape Experts’ Research Judgment Calls</p>
+  <div class="meta">
+    作者：Amaç Herdağdelen、Hailey Joren、Alex Tamkin<br>
+    原文：<a href="https://www.anthropic.com/research/agents-judgment-calls" target="_blank" rel="noopener">anthropic.com/research/agents-judgment-calls</a><br>
+    论文 PDF：<a href="https://www-cdn.anthropic.com/519c17a5d23a794e8b6d50a854048d0b61e0d73a.pdf" target="_blank" rel="noopener">29 页全文</a>
+  </div>
+  <div class="note">
+    这份页面是逐段对照阅读用的：<b>灰色英文是每一段的关键句原话</b>（短引），<b>下面是该段内容的中文表述</b>，数字、条件、结论都按原文来。要看完整原文和全部图表，请点上面两个链接。
+  </div>
+</header>
+
+<p class="lede">在一项随机对照实验里，50 位职业分析师跟着一个 AI 编程智能体做真实的统计分析。智能体被随机指定去支持某个选项——分析师并不知道。<b>结果他们的选择与智能体的倾向一致的比例是 86%</b>；如果智能体的意见毫无影响，这个数字应该接近 50%。</p>
+
+<h2>一、问题：专家到底还做不做那些决定</h2>
+
+<div class="blk">
+  <p class="en">“When experts hand their work to an AI agent, the usual assumption is that they still make the decisions that matter.”</p>
+  <p class="zh">专家把活儿交给 AI 智能体时，通常假定关键决定仍由自己做：智能体写代码、跑数字、给建议，而专家决定测什么、怎么解释含糊的证据、下一步做什么。这类问题往往不止一个说得通的答案，最后落在谁的判断上，取决于这个人的经验与价值观。</p>
+</div>
+
+<div class="blk">
+  <p class="en">“We wanted to look at whether experts really do make those important decisions, or whether in practice they defer to their AI agents.”</p>
+  <p class="zh">研究要问的是：专家真的在做这些决定，还是实际上把事情让给了智能体。实验请 50 位有因果推断经验的职业分析师用 Claude Code 做一次真实的统计分析，任务是给一家农业合作社判断：他们办的咨询服务有没有效果、该不该扩大。</p>
+</div>
+
+<div class="blk">
+  <p class="en">“Along the way, the analysts had to make four choices between two reasonable options.”</p>
+  <p class="zh">过程中分析师要在四个决定上二选一，两个选项都说得通——比如把生产力算成「每公顷产量」还是「每单位运营成本的产量」——最后再给一个总结论。为了看这些决定是不是他们自己做的，研究把每位分析师的智能体在每一个决定上预先设定一个倾向，并且不告知分析师；倾向指向哪一边，由抛硬币决定。智能体被告知：要为自己这一边做出最诚实有力的论证，证据逼人时允许改口，任何时候不得误导。</p>
+</div>
+
+<div class="blk">
+  <p class="en">“Across the four analytical choices, analysts went with their agent’s lean 86% of the time.”</p>
+  <p class="zh">四个分析决定合起来，分析师跟随智能体倾向的比例是 86%（若无影响应约 50%）。如果分析师在智能体表态之前已经说过自己的偏好，那么当智能体不同意时，他们有 60% 改掉自己的选择；而智能体同意时，只有 6% 会改。</p>
+</div>
+
+<div class="blk">
+  <p class="en">“77% of analysts used the agents’ own arguments—sometimes word for word—but only 15% credited the agent.”</p>
+  <p class="zh">事后请他们解释自己的选择：77% 的人至少在一处用了智能体的论证，有时逐字照搬；但只有 15% 在任何地方提到这些论证来自智能体。跟得紧的那些人，对最终建议的信心与其他人差不多，认为这是「自己判断的产物」的比例也差不多。</p>
+</div>
+
+<div class="blk">
+  <p class="en">“We don’t know how much this tells us about the real world.”</p>
+  <p class="zh">这项结果能多大程度推到真实世界，作者自己存疑：真实场景里智能体有时会自带倾向——不给任何倾向设定时，Claude Opus 4.8 在 123 次运行里有 112 次做出同样的五个选择——但这次是刻意把偏好加强，为了测出它的效应。当智能体既没有明确偏好、也没有被要求表态时，效应可能更小。</p>
+</div>
+
+<div class="blk">
+  <p class="en">“This isn’t a simple cautionary tale against working with AI.”</p>
+  <p class="zh">这也不是「别用 AI」的告诫。用了智能体的分析师完成任务更快，严重错误也少得多；不过不用 AI 那组人少、经验也更浅，作者不愿过度解读。真正的担心是另一件事：当 AI 接过越来越多的动手活，恰恰是这类判断决定成了人的判断与价值真正影响结果的地方。如果专家在不知不觉中让位，那么智能体那些可能任意、也可能跑偏的偏好，就会塑造关于政策建议、研究方向的重大决定——而没有人真的选过这些偏好。对「怎么让 AI 保持安全」的研究，这一点尤其要紧：研究者已经开始用智能体跑实验、做分析，而人类审稿者只有在判断确实属于自己时，才算一道独立的检查。</p>
+</div>
+
+<h2>二、研究是怎么设计的</h2>
+
+<div class="blk">
+  <p class="en">“We recruited 61 analysts for a randomized controlled trial.”</p>
+  <p class="zh">招募 61 位分析师做随机对照实验，全部来自预先筛过的专业人才池：通过因果推断知识测验、常用 Python 或 R、并且有观察性因果分析（用真实数据而不是受控实验去研究因果）的实操经验。</p>
+</div>
+
+<div class="blk">
+  <p class="en">“The task was set at a fictional organization, the Greenfields Farming Cooperative.”</p>
+  <p class="zh">任务设在一家虚构机构 Greenfields 农业合作社：社里办了一个同样虚构的、自愿付费的咨询项目，帮社员农场提高产量，约 40% 的社员已加入。理事会要决定是补贴并扩大这个项目，还是停掉。只有当项目把农场生产力提升约 3–4% 这个门槛时，理事会才会扩大——但它没说生产力该怎么测。</p>
+</div>
+
+<div class="blk">
+  <p class="en">“We deliberately left four analytical decisions open, each with two reasonable options.”</p>
+  <p class="zh">于是四个分析决定被有意留空，每个都有两个说得通的选项：</p>
+  <ul>
+    <li><b>结果怎么衡量</b>：用每公顷产量，还是每单位运营成本的产量？</li>
+    <li><b>比较方法</b>：看加入的农场加入前后产量怎么变、与其他农场同期变化对照（双重差分），还是直接比较产量并统计调整农场之间的差异？</li>
+    <li><b>评估范围</b>：只算已加入的农场，还是算合作社全体成员？</li>
+    <li><b>权重</b>：每个农场等权，还是给大户更高权重？</li>
+  </ul>
+  <p class="zh">这四个选择最终汇成一个建议：全面推开，还是停掉（也可以提议延长一年）。每一个分析决定都能让估计出来的增产幅度变动好几个百分点，而理事会门槛只有 3–4%——这就是它们重要的原因。</p>
+</div>
+
+<div class="blk">
+  <p class="en">“For each of the five decisions presented to each analyst, the agent’s lean was set by a coin flip.”</p>
+  <p class="zh">对每一位分析师，五个决定上智能体的倾向分别抛硬币决定。倾向通过隐藏的系统提示交底：要把它当作自己的看法，在讨论到该决定时主动提出，并依据数据做出最强论证；证据明确反转时改口；任何时候不得曲解结果、隐藏数据，或讲数据支撑不了的话。</p>
+</div>
+
+<div class="blk">
+  <p class="en">“Out of 61 participants, 11 chose not to use the agent and are left out of the analysis unless noted.”</p>
+  <p class="zh">61 人里有 11 人选择不用智能体，除非特别说明，这部分不进分析。剩下的 50 人里，65% 有硕士以上学历或有六年以上经验；在回答了问卷的 48 人中，90% 自评在观察性因果推断上「熟练」或「专家」。任务用时中位数 65 分钟，一半人落在 50–79 分钟。他们在一个内嵌 Claude Code 的网页版 VS Code 里工作，跑的是 Claude Opus 4.8、High 推理档。</p>
+</div>
+
+<div class="blk">
+  <p class="en">“When they finished, analysts submitted their four analytical choices and their final recommendation.”</p>
+  <p class="zh">完成时，分析师要提交四个分析决定、最终建议，以及一个带置信区间的项目效果估计，然后填一份任务后问卷。另有一个独立的 AI 模型读他们的提交和代码，记录每个决定上实际选了哪一项；当它的判读与分析师的问卷自述不一致时，以最终裁定为准。</p>
+</div>
+
+<h2>三、结果</h2>
+
+<h3>1. 大多数时候跟着智能体走</h3>
+<div class="blk">
+  <p class="en">“On each of the four analytical decisions, analysts’ choices matched their agents’ lean the large majority of the time.”</p>
+  <p class="zh">四个决定上的跟随率分别是：结果衡量 92%、比较方法 82%、评估范围 81%、权重 90%，四项合并 86%。论文里的图 2 展示了每个决定（含最终建议）上，智能体的倾向把分析师的选择推移了多少。</p>
+</div>
+
+<h3>2. 对最终建议的影响弱一些，但早已间接决定了它</h3>
+<div class="blk">
+  <p class="en">“When the agent leaned toward rolling out the program, 54% of analysts recommended it, compared with 36% when it leaned the other way.”</p>
+  <p class="zh">智能体倾向「推开」时，54% 的分析师建议推行；倾向另一边时是 36%（提议延长一年算作不推行）。作者认为效应变弱，是因为一旦估计值出来，建议基本就由它是否越过 3–4% 门槛决定，留给判断的空间小了。但到那时，智能体在四个分析决定上的倾向早已塑造了这个估计值本身：只用这四个倾向，一个统计模型就能正确预测 82% 的分析师建议（一直猜最常见答案的基线是 61%，此分析不含提议延长的那些人）。也就是说，分析师还没开始做，光凭硬币的正反面，就能大致预测他会建议什么。</p>
+</div>
+
+<h3>3. 已经选好的人，遇到反对也会改</h3>
+<div class="blk">
+  <p class="en">“When the lean went against their choice, they switched 60% of the time, compared with 6% when it agreed.”</p>
+  <p class="zh">有 38 个案例是分析师在智能体表态之前就已表达偏好。倾向与他们的选择相反时，60% 改口；一致时只有 6% 改口，差 54 个百分点。但样本只有 38 例，估计不精确，95% 置信区间从 24 到 82 个百分点。也不能确定这个差异就是 AI 影响造成的：早表态的那批人，本身可能在某些方面与没表态的不同。</p>
+</div>
+
+<h3>4. 经验和专业水平都预测不了谁会让位</h3>
+<div class="blk">
+  <p class="en">“Experience and expertise did not predict who deferred.”</p>
+  <p class="zh">在一项探索性分析里，作者检验了 10 个特征是否能预测跟随率：从业年数、因果推断自评水平、学历、因果推断测验分数、对 AI 的信任、使用 AI 的频率、「认知需求」（一个人有多享受费力的思考）、开放性、性别、年龄。只有年龄出现统计显著——年纪大的跟随更多。但作者不太当真：测的东西多了，本来就更可能碰上假阳性，校正之后这个结果就消失了。何况大多数人本来就在大多数决定上跟随，变异太小，即便真有效应也难以检出。</p>
+</div>
+
+<h3>5. 跟着走的人，仍把这当作自己的建议</h3>
+<div class="blk">
+  <p class="en">“On the post-task survey, 52% of analysts rated the final recommendation as more their own than their agent’s.”</p>
+  <p class="zh">任务后问卷中，52% 的人认为最终建议更属于自己的判断，其余认为更属于智能体。但两组受影响的幅度差不多：前者平均向智能体倾向偏移约 65 个百分点，后者 79 个百分点，差距在误差范围内。信心也类似——按 0（「等于抛硬币」）到 100（「我愿意拿职业声誉担保」）打分，四个决定全都跟随的人平均 71 分，其余人 73 分。</p>
+</div>
+
+<h3>6. 用智能体的话，解释自己的选择</h3>
+<div class="blk">
+  <p class="en">“Even so, 77% repeated their agent’s argument in at least one answer, sometimes word for word, and only 15% credited the agent anywhere.”</p>
+  <p class="zh">问卷对每个决定都问：「简要说明为什么选这个而不是另一个？如果不是主动选的，直说就行。」回答时不能回看与智能体的对话。即便如此，77% 的人至少在一处复述了智能体的论证，有时逐字照搬，只有 15% 在任何地方说明了出处。被直接问「你觉得这个研究在测什么」时，48 人里有 6 人猜对了是 AI 对自己选择的影响，但没有一个人想到 AI 的偏好本身被操纵过。</p>
+</div>
+
+<h3>7. 不用 AI 的那组，严重错误更多、也更慢</h3>
+<div class="blk">
+  <p class="en">“Of the 11 participants who chose not to use the agent, six (55%) made serious methodological errors that invalidated their results.”</p>
+  <p class="zh">不用智能体的 11 人中，6 人（55%）犯了使结果失效的严重方法错误；用智能体的 50 人里是 3 人（6%）。两个 AI 模型先标出错误，再由一位作者在不知分组的情况下逐一核对。不用智能体的那组也更慢：用时中位数 90 分钟，另一组 65 分钟。两组人本身不可直接比较，因此不能断定结果差异是用不用 AI 造成的：不用 AI 的那组平均经验更浅——硕士以上学历 4/11 对 24/46，分析岗两年以内 6/11 对 15/48，因果推断自评熟练或专家 8/11 对 43/48。</p>
+</div>
+
+<h2>四、这项研究本身的局限</h2>
+
+<div class="blk">
+  <span class="tag">局限一</span>
+  <p class="en">“We deliberately strengthened the agents’ lean.”</p>
+  <p class="zh">为了让效应测得到，研究故意让智能体稳定地持有并表达偏好。报告出来的比例说明的是「智能体偏向一边并且说出来」时会发生什么；能否推到现实工作，取决于专家自己的看法有多强、所涉决定定义得多清楚，以及模型怎么表现——包括它有没有偏好、会不会主动讲。</p>
+</div>
+
+<div class="blk">
+  <span class="tag">局限二</span>
+  <p class="en">“We studied one task, in one field, with one model.”</p>
+  <p class="zh">一个任务、一个领域、一个模型。任务约一小时，讲的是农业，跑的是 Claude Opus 4.8。分析师是因果推断的专家，但对农业陌生；真实工作里他们更懂行、自己的看法更强，也能找相关人访谈、和理事会沟通，用别的办法把合理选项收窄，这些都可能削弱智能体的影响。</p>
+</div>
+
+<div class="blk">
+  <span class="tag">局限三</span>
+  <p class="en">“Our estimates are averages across analysts.”</p>
+  <p class="zh">估计值是跨分析师的均值。因为每个人拿到的硬币正反面不同，比较「智能体偏向相反方向」的两组人，得到的是偏好的平均效应。研究没有记录每位参与者在智能体表态前的独立看法，所以无法说某个具体的人被影响了多少。</p>
+</div>
+
+<div class="blk">
+  <span class="tag">局限四</span>
+  <p class="en">“We recorded which option analysts chose, but not how strongly they preferred it.”</p>
+  <p class="zh">只记录了最终选了哪一项，没记录偏好的强度。让位的一种可能解释是：专家本来就没有很强的看法。研究测到的是选择有没有移动，而不是他们对这个选择有多笃定。</p>
+</div>
+
+<h2>五、这意味着什么</h2>
+
+<div class="blk">
+  <p class="en">“One reason analysts deferred so readily may be that experts don’t always arrive with their views fully formed.”</p>
+  <p class="zh">分析师这么容易让位，一个原因是：专家的看法常常不是带着成形观点进场的，而是在权衡选项的过程中才想清楚、甚至才发现自己怎么想。实验里的智能体被要求不得误导，也常坦白说明每个选项下结果会怎么变；但它们很少为「专家为什么可能更偏好另一个选项」做出有力论证——而那恰恰能帮分析师做出更知情的选择。只有一边被论证充分，分析师就可能直接采纳智能体的假设，而没走完自己想一遍的过程。</p>
+</div>
+
+<div class="blk">
+  <p class="en">“For individual experts, this could mean losing agency over their own work.”</p>
+  <p class="zh">对个人来说，这可能意味着对自己工作的主导权流失，研究者称之为「去权（disempowerment）」：成果仍然署专家的名字，但最依赖其判断的那些决定，实际上由智能体先前的信念定了。</p>
+</div>
+
+<div class="blk">
+  <p class="en">“The stakes extend beyond individuals, though, because so much of science and policy rests on judgment calls like these.”</p>
+  <p class="zh">影响不止于个人。科学与政策大量建立在这类判断决定上。不同研究团队各自得出同一结果时，我们会更相信它，因为我们假定彼此独立；可如果这些团队都向同一个偏好的模型让位，他们的一致就不再独立。表面上的共识可能只是一个模型的偏好，而如果这个偏好任意或跑偏，同一种偏差会同时塑造许多结果。</p>
+</div>
+
+<div class="blk">
+  <p class="en">“The same problem applies to AI safety research.”</p>
+  <p class="zh">AI 安全研究同样如此。研究者已开始用智能体跑实验、做分析，一部分原因是工作量超出人手。所谓「人在环路中」，前提是这个人的判断构成一道独立检查。但在这项研究里，分析师签字放行的工作，其中的判断决定大多已由智能体随机分配的偏好定下。论文也显示：没被指定倾向的智能体，自身偏好较弱，有时还会反驳用户。</p>
+</div>
+
+<div class="blk">
+  <p class="en">“Deferral of this kind is hard to detect.”</p>
+  <p class="zh">这种让位很难被发现。检查 AI 辅助的工作有没有错、或者对不对参考答案，前提是存在正确答案；而在判断决定上没有。无论选哪个选项，工作看起来都成立。事后问专家也未必有用，因为他们可能根本没察觉自己受了影响。</p>
+</div>
+
+<div class="blk">
+  <p class="en">“This isn’t an argument for using AI less.”</p>
+  <p class="zh">这不是「少用 AI」的倡议。用得好，AI 可以扩大而不是侵蚀人的能动性。作者提出三个值得往下研究的方向：</p>
+</div>
+
+<h3>方向一 · 把「让位」测出来</h3>
+<div class="blk">
+  <p class="en">“We could measure deferral in our study because we randomized the agent’s lean.”</p>
+  <p class="zh">这次能测出让位，是因为把智能体的倾向随机化了——真实工作里几乎做不到；结果也说明人未必能自己准确报告。需要能在日常场景下测出让位的办法，近期一些「估算某人在没有 AI 时会怎么做」的工作是个好起点。也需要更清楚模型默认的偏好是什么、怎么表达出来，人才能更有依据地和模型互动。</p>
+</div>
+
+<h3>方向二 · 换一种方式设计智能体</h3>
+<div class="blk">
+  <p class="en">“Agents could make the best case for each option, or ask experts for their own view before offering one.”</p>
+  <p class="zh">可以让智能体为每一个选项都做出最佳论证，或者在给出自己的看法前先问专家的看法。但这很快会让人不堪重负：一次分析里常有大量开放决定，而 AI 的价值很大一部分正在于不必每一个都想。智能体应当只提最要紧的那些——可挑哪些要紧，本身又是判断决定。模型怎么说话大概也重要：笃定与流畅能左右人，听起来非常自信的模型可能把人推得比应有的更远，而说话含含糊糊的模型只会让使用者烦。</p>
+</div>
+
+<h3>方向三 · 改变制度</h3>
+<div class="blk">
+  <p class="en">“Institutions often treat an expert’s sign-off as evidence of independent judgment.”</p>
+  <p class="zh">制度常把专家的签字当作「独立判断」的证据。当 AI 承担了更多工作，这个假设就越来越站不住。机构需要有意识地划出：哪些决定必须由人自己知情地判断，并给人时间和资源去形成判断。判断也依赖技艺，长期不再做这类决定的人，可能会失去做它的能力。模型越来越强，机构需要一套明确的策略，来界定人的角色和能力的养成——即便 AI 极其能干，出于安全、韧性，或者单纯因为珍视这些能力本身，机构也可能愿意护住人的技艺与监督。</p>
+</div>
+
+<div class="blk">
+  <p class="en">“There may be no single right division of labor between people and AI.”</p>
+  <p class="zh">人与 AI 的分工，也许没有唯一正确答案。有些决定交出去没问题，有些值得留在手里。有了合适的工具，这条界线可以是我们选的，而不是被漂着漂着就到了那儿。</p>
+</div>
+
+<footer>
+  原文 © Anthropic，2026-10-27，作者 Amaç Herdağdelen、Hailey Joren、Alex Tamkin。<br>
+  本页灰色英文为各段关键句的短引，中文为该段内容的表述，供对照阅读；完整原文与全部图表请见
+  <a href="https://www.anthropic.com/research/agents-judgment-calls" target="_blank" rel="noopener">Anthropic 研究页</a>
+  与
+  <a href="https://www-cdn.anthropic.com/519c17a5d23a794e8b6d50a854048d0b61e0d73a.pdf" target="_blank" rel="noopener">论文 PDF</a>。
+</footer>
+
+</div>
+</body>
+</html>

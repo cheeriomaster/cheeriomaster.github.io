@@ -1,0 +1,1795 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>杨惠东 · Ethan Yang</title>
+  <meta name="description" content="研究人，设计体验，让技术有温度。UX/UI Designer · CARIATIVE">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Noto+Serif+SC:wght@300;400;600&family=Outfit:wght@300;400;500&family=DM+Mono:wght@300;400&family=Spectral:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+  <style>
+    /* ══════════════════════════════
+       TOKENS
+    ══════════════════════════════ */
+    :root {
+      /* 暖象牙白体系 */
+      --bg:           #FAF8F5;
+      --bg-warm:      #F3EDE6;
+      --bg-deep:      #EAE2D8;
+      --bg-card:      #FDFAF7;
+
+      /* 深色文字 */
+      --text-primary: #1A1512;
+      --text-mid:     #6B5B4E;
+      --text-subtle:  #A89888;
+
+      /* 强调色：温暖赤陶 */
+      --accent:       #B85C38;
+      --accent-soft:  #D4846A;
+      --accent-pale:  #F5EDE8;
+
+      /* 边框 */
+      --border:       rgba(106,91,78,0.12);
+      --border-mid:   rgba(106,91,78,0.22);
+
+      /* 字体 */
+      --font-serif:   'Cormorant Garamond', 'Georgia', serif;
+      --font-serif-alt: 'Spectral', 'Georgia', serif;
+      --font-chinese: 'Noto Serif SC', '宋体', serif;
+      --font-sans:    'Outfit', -apple-system, sans-serif;
+      --font-mono:    'DM Mono', 'Courier New', monospace;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    ::selection { background: var(--accent); color: #fff; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      background: var(--bg);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-weight: 300;
+      line-height: 1.8;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border-mid); border-radius: 2px; }
+
+    /* ══════════════════════════════
+       BASE LAYOUT
+    ══════════════════════════════ */
+    .container { max-width: 1160px; margin: 0 auto; padding: 0 80px; }
+    section { padding: 120px 0; }
+
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--text-subtle);
+      margin-bottom: 20px;
+      font-weight: 400;
+    }
+
+    .section-divider {
+      width: 32px;
+      height: 1px;
+      background: var(--accent);
+      margin-bottom: 56px;
+    }
+
+    /* ══════════════════════════════
+       HERO
+    ══════════════════════════════ */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 0;
+      position: relative;
+    }
+
+    /* 右上角装饰线 */
+    #hero::before {
+      content: '';
+      position: absolute;
+      top: 48px;
+      right: 56px;
+      width: 1px;
+      height: 80px;
+      background: linear-gradient(to bottom, transparent, var(--text-subtle));
+      opacity: 0.4;
+    }
+
+    .hero-inner {
+      display: flex;
+      align-items: flex-start;
+      padding: 0 80px;
+    }
+
+    .hero-left { flex: 1; }
+
+    /* 姓名上方的标签 */
+    .hero-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--text-subtle);
+      margin-bottom: 14px;
+      opacity: 0;
+      animation: fadeUp 1.0s ease 0.15s forwards;
+    }
+
+    /* 大名 */
+    .hero-name {
+      font-family: var(--font-serif), var(--font-chinese);
+      font-size: clamp(80px, 13vw, 148px);
+      font-weight: 300;
+      line-height: 0.92;
+      letter-spacing: -0.03em;
+      color: var(--text-primary);
+      margin-bottom: 52px;
+      opacity: 0;
+      animation: fadeUp 1.0s ease 0.3s forwards;
+    }
+
+    /* 中文名单字 */
+    .hero-name-char {
+      display: inline-block;
+      transition: transform 0.55s cubic-bezier(0.25,0.46,0.45,0.94), color 0.5s ease;
+      cursor: default;
+    }
+    .hero-name-char:hover {
+      transform: translateY(-4px) rotate(-0.8deg);
+      color: #9E7A62;
+    }
+
+    /* 英文名 */
+    .hero-name-en {
+      display: block;
+      font-family: var(--font-serif-alt);
+      font-size: clamp(24px, 3.5vw, 42px);
+      font-weight: 300;
+      font-style: italic;
+      letter-spacing: 0.04em;
+      line-height: 1.4;
+      margin-top: 10px;
+      margin-bottom: 8px;
+      width: fit-content;
+      background: linear-gradient(
+        90deg,
+        var(--text-mid) 0%,
+        var(--text-subtle) 42%,
+        var(--text-mid) 84%
+      );
+      background-size: 220% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      transition: background-position 1s ease;
+    }
+    .hero-name-en:hover {
+      background-position: 100% center;
+    }
+
+    /* 副标题 */
+    .hero-tagline {
+      font-family: var(--font-serif), var(--font-chinese);
+      font-size: clamp(15px, 1.8vw, 18px);
+      color: var(--text-mid);
+      font-weight: 300;
+      line-height: 1.75;
+      margin-bottom: 72px;
+      opacity: 0;
+      animation: fadeUp 1.0s ease 0.45s forwards;
+    }
+
+    /* 三个元信息 */
+    .hero-meta {
+      display: flex;
+      gap: 56px;
+      opacity: 0;
+      animation: fadeUp 1.0s ease 0.6s forwards;
+    }
+
+    .hero-meta-item { display: flex; flex-direction: column; gap: 6px; }
+
+    .hero-meta-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--text-subtle);
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      font-weight: 400;
+    }
+
+    .hero-meta-value {
+      font-family: var(--font-chinese);
+      font-size: 13px;
+      color: var(--text-mid);
+      font-weight: 400;
+      letter-spacing: 0.05em;
+    }
+
+    /* 向下箭头 */
+    .hero-cta {
+      margin-top: 64px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      opacity: 0;
+      animation: fadeUp 1.0s ease 0.75s forwards;
+      width: fit-content;
+      transition: opacity 0.3s;
+    }
+    .hero-cta:hover { opacity: 0.9; }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(7px); }
+    }
+
+
+
+    /* 右侧 — 圆形装饰 */
+    .hero-right {
+      opacity: 0;
+      animation: fadeIn 2.0s ease 0.2s forwards;
+    }
+
+    .hero-orb {
+      width: clamp(240px, 26vw, 340px);
+      height: clamp(240px, 26vw, 340px);
+      border-radius: 50%;
+      background: radial-gradient(
+        circle at 40% 38%,
+        rgba(255,250,246,0.95) 0%,
+        var(--bg-warm) 50%,
+        rgba(180,160,140,0.10) 100%
+      );
+      border: 1px solid var(--border);
+      box-shadow:
+        inset 0 0 60px rgba(180,160,140,0.06),
+        0 30px 100px rgba(106,91,78,0.05);
+      position: relative;
+    }
+
+    /* 圆形内的十字细线 */
+    .hero-orb::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 60%;
+      height: 60%;
+      border: 1px solid rgba(106,91,78,0.05);
+      border-radius: 50%;
+    }
+
+    /* 底部签名 */
+    .hero-bottom {
+      padding: 0 80px 56px;
+      opacity: 0;
+      animation: fadeUp 1.0s ease 0.9s forwards;
+    }
+
+    .hero-bottom-text {
+      font-family: var(--font-serif);
+      font-size: 11px;
+      color: var(--text-subtle);
+      font-style: italic;
+      letter-spacing: 0.12em;
+    }
+
+    /* ══════════════════════════════
+       三板块
+    ══════════════════════════════ */
+    .section-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      background: var(--border);
+    }
+
+    .s-card {
+      background: var(--bg-card);
+      padding: 56px 44px;
+      cursor: pointer;
+      transition: background 0.4s ease;
+      position: relative;
+    }
+
+    .s-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.5s ease;
+    }
+    .s-card:hover { background: var(--accent-pale); }
+    .s-card:hover::after { transform: scaleX(1); }
+
+    .s-card-icon {
+      width: 32px;
+      height: 32px;
+      margin-bottom: 36px;
+      opacity: 0.5;
+      transition: opacity 0.3s;
+    }
+    .s-card:hover .s-card-icon { opacity: 1; }
+
+    .s-card-icon svg {
+      width: 32px;
+      height: 32px;
+      stroke: var(--accent);
+      stroke-width: 1;
+      fill: none;
+    }
+
+    .s-card-title {
+      font-family: var(--font-serif), var(--font-chinese);
+      font-size: 28px;
+      font-weight: 400;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+      letter-spacing: 0.02em;
+    }
+
+    .s-card-desc {
+      font-size: 13px;
+      color: var(--text-mid);
+      line-height: 1.9;
+      margin-bottom: 36px;
+      font-weight: 300;
+    }
+
+    .s-card-count {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--text-subtle);
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      transition: color 0.3s;
+    }
+    .s-card:hover .s-card-count { color: var(--accent); }
+
+    /* ══════════════════════════════
+       合作方向
+    ══════════════════════════════ */
+    #collab {
+      background: var(--bg-warm);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .collab-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      background: var(--border);
+    }
+
+    .collab-group {
+      background: var(--bg-warm);
+      padding: 52px 48px;
+      transition: background 0.35s;
+    }
+    .collab-group:hover { background: var(--bg-card); }
+
+    .collab-group-title {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.30em;
+      margin-bottom: 36px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+      font-weight: 400;
+    }
+
+    .collab-item {
+      margin-bottom: 28px;
+      padding-bottom: 28px;
+      border-bottom: 1px solid var(--border);
+    }
+    .collab-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+
+    .collab-item-title {
+      font-family: var(--font-serif), var(--font-chinese);
+      font-size: 18px;
+      color: var(--text-primary);
+      font-weight: 400;
+      margin-bottom: 10px;
+    }
+
+    .collab-item-desc {
+      font-size: 13px;
+      color: var(--text-mid);
+      line-height: 1.85;
+      font-weight: 300;
+    }
+
+    /* ══════════════════════════════
+       书籍 & 荣誉
+    ══════════════════════════════ */
+    .books-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0;
+      background: var(--bg-main);
+      margin-bottom: 48px;
+      max-width: 680px;
+    }
+
+    .book-card {
+      background: var(--bg-card);
+      display: flex;
+      transition: background 0.3s;
+    }
+    .book-card:hover { background: var(--accent-pale); }
+
+    .book-cover {
+      width: 124px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px 14px;
+      background: var(--bg-warm);
+      flex-shrink: 0;
+    }
+    .book-cover-img {
+      width: 100%;
+      aspect-ratio: 5 / 7;
+      object-fit: cover;
+      display: block;
+      border-radius: 2px;
+      box-shadow: 0 6px 18px rgba(106,91,78,0.18), 0 1px 4px rgba(106,91,78,0.12);
+    }
+
+    .book-meta-coming {
+      color: #8888BB;
+      font-size: 11px;
+      font-family: var(--font-mono);
+      letter-spacing: 0.04em;
+    }
+
+    .learning-images {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .learning-img-placeholder {
+      aspect-ratio: 4/3;
+      background: var(--bg-card);
+      border: 1.5px dashed #ccc;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: border-color 0.2s;
+      cursor: pointer;
+    }
+
+    .learning-img-placeholder:hover {
+      border-color: var(--accent);
+    }
+
+    .learning-img-hint {
+      font-size: 11px;
+      color: #aaa;
+      font-family: var(--font-mono);
+    }
+
+    .book-info {
+      padding: 18px 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .book-title {
+      font-family: var(--font-serif), var(--font-chinese);
+      font-size: 16px;
+      color: var(--text-primary);
+      font-weight: 400;
+      margin-bottom: 6px;
+    }
+
+    .book-meta {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--text-subtle);
+      letter-spacing: 0.15em;
+    }
+
+    .honors-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--text-subtle);
+      text-transform: uppercase;
+      letter-spacing: 0.28em;
+      margin-bottom: 20px;
+    }
+
+    .honors-list { display: flex; flex-direction: column; gap: 16px; }
+
+    .honor-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-family: var(--font-serif);
+      font-size: 14px;
+      color: var(--text-mid);
+      font-weight: 400;
+    }
+
+    .honor-mark {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .award-card {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 24px 28px;
+      margin-top: 24px;
+      margin-bottom: 24px;
+    }
+
+    .award-img-wrap {
+      width: 90px;
+      flex-shrink: 0;
+    }
+
+    .award-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 10px;
+      display: block;
+    }
+
+    .learning-img-wrap {
+      aspect-ratio: 4/3;
+    }
+
+    .award-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .award-info-title {
+      font-family: var(--font-serif), var(--font-chinese);
+      font-size: 16px;
+      font-weight: 400;
+      color: var(--text-primary);
+      letter-spacing: 0.04em;
+    }
+
+    .award-info-year {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: 0.12em;
+    }
+
+    .award-info-desc {
+      font-family: var(--font-serif);
+      font-size: 13px;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--text-mid);
+      margin-top: 6px;
+      letter-spacing: 0.04em;
+    }
+
+    /* ══════════════════════════════
+       联系
+    ══════════════════════════════ */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      background: var(--border);
+    }
+
+    .contact-card {
+      background: var(--bg-card);
+      padding: 44px 36px;
+      text-align: center;
+      cursor: pointer;
+      transition: background 0.35s;
+      position: relative;
+    }
+
+    .contact-card:hover { background: var(--accent-pale); }
+
+    .contact-card::after {
+      content: '点击复制';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      font-family: var(--font-mono);
+      font-size: 8px;
+      color: var(--text-subtle);
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      padding: 8px;
+      background: var(--accent-pale);
+      transform: translateY(100%);
+      transition: transform 0.35s ease;
+    }
+    .contact-card:hover::after { transform: translateY(0); }
+
+    .contact-icon {
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: center;
+      color: var(--text-subtle);
+      transition: color 0.3s;
+    }
+    .contact-card:hover .contact-icon { color: var(--accent); }
+
+    .contact-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--text-subtle);
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+      margin-bottom: 10px;
+    }
+
+    .contact-value {
+      font-family: var(--font-serif), var(--font-chinese);
+      font-size: 14px;
+      color: var(--text-primary);
+      line-height: 1.7;
+      font-weight: 400;
+    }
+
+
+
+    /* ══════════════════════════════
+       DETAIL MODAL
+    ══════════════════════════════ */
+    .detail-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      align-items: flex-start;
+      justify-content: center;
+      overflow-y: auto;
+      padding: 72px 24px;
+    }
+    .detail-overlay.show { display: flex; }
+
+    .detail-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(26,21,18,0.10);
+      backdrop-filter: blur(8px);
+      z-index: 199;
+    }
+
+    .detail-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-mid);
+      width: 100%;
+      max-width: 760px;
+      margin: auto;
+      position: relative;
+      z-index: 201;
+      animation: panelIn 0.45s ease;
+    }
+
+    @keyframes panelIn {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .detail-header {
+      padding: 40px 48px 32px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .detail-header-title { display: flex; align-items: center; gap: 18px; }
+
+    .detail-header-mark { width: 24px; height: 24px; }
+    .detail-header-mark svg {
+      width: 24px; height: 24px;
+      stroke: var(--accent);
+      stroke-width: 1;
+      fill: none;
+    }
+
+    .detail-header h2 {
+      font-family: var(--font-serif), var(--font-chinese);
+      font-size: 22px;
+      font-weight: 400;
+      color: var(--text-primary);
+      letter-spacing: 0.04em;
+    }
+
+    .detail-close {
+      width: 34px; height: 34px;
+      background: transparent;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      font-family: var(--font-mono);
+      font-size: 16px;
+      color: var(--text-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      border-radius: 2px;
+    }
+    .detail-close:hover { border-color: var(--accent); color: var(--accent); }
+
+    .detail-body { padding: 44px 48px 60px; }
+
+    /* ══════════════════════════════
+       DETAIL: 生活
+    ══════════════════════════════ */
+    .life-grid-detail {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      background: var(--border);
+    }
+
+    .life-item {
+      background: var(--bg-card);
+      padding: 32px 28px;
+      transition: background 0.3s;
+    }
+    .life-item:hover { background: var(--accent-pale); }
+
+    .life-item-mark { width: 16px; height: 16px; margin-bottom: 16px; }
+    .life-item-mark svg { width: 16px; height: 16px; stroke: var(--accent); stroke-width: 1.2; fill: none; }
+
+    .life-item-title {
+      font-family: var(--font-serif), var(--font-chinese);
+      font-size: 16px;
+      color: var(--text-primary);
+      margin-bottom: 10px;
+      font-weight: 400;
+    }
+
+    .life-item-desc { font-size: 12px; color: var(--text-mid); line-height: 1.9; font-weight: 300; }
+
+    /* 纯图标卡片 */
+    .life-item-icon-only {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+    .life-item-icon-only .life-item-mark {
+      width: 36px;
+      height: 36px;
+      margin: 0 auto 12px;
+    }
+    .life-item-icon-only .life-item-mark svg {
+      width: 36px;
+      height: 36px;
+      stroke: var(--accent);
+      stroke-width: 1.2;
+      fill: none;
+    }
+
+    /* ══════════════════════════════
+       DETAIL: 心理学时间线
+    ══════════════════════════════ */
+    .psy-timeline { padding-left: 0; }
+
+    .psy-item {
+      display: flex;
+      gap: 28px;
+      margin-bottom: 40px;
+      align-items: flex-start;
+    }
+    .psy-item:last-child { margin-bottom: 0; }
+
+    .psy-year {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-subtle);
+      width: 72px;
+      flex-shrink: 0;
+      padding-top: 4px;
+      letter-spacing: 0.04em;
+    }
+
+    .psy-dot-line { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
+
+    .psy-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      margin-top: 5px;
+      flex-shrink: 0;
+    }
+
+    .psy-line {
+      width: 1px;
+      flex: 1;
+      min-height: 24px;
+      background: var(--border);
+      margin-top: 5px;
+    }
+    .psy-item:last-child .psy-line { display: none; }
+
+    .psy-title {
+      font-family: var(--font-serif), var(--font-chinese);
+      font-size: 17px;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+      font-weight: 400;
+    }
+
+    .psy-sub {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-subtle);
+      margin-bottom: 10px;
+      letter-spacing: 0.05em;
+    }
+
+    .psy-desc { font-size: 12px; color: var(--text-mid); line-height: 1.9; font-weight: 300; }
+
+    /* ══════════════════════════════
+       DETAIL: 工作时间线
+    ══════════════════════════════ */
+    .work-timeline-detail { padding-left: 0; }
+
+    .work-item {
+      display: flex;
+      gap: 28px;
+      margin-bottom: 40px;
+      align-items: flex-start;
+    }
+    .work-item:last-child { margin-bottom: 0; }
+
+    .work-year {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-subtle);
+      width: 72px;
+      flex-shrink: 0;
+      padding-top: 4px;
+      letter-spacing: 0.03em;
+    }
+
+    .work-dot-line { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
+
+    .work-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent-soft);
+      margin-top: 5px;
+      flex-shrink: 0;
+    }
+
+    .work-line {
+      width: 1px;
+      flex: 1;
+      min-height: 24px;
+      background: var(--border);
+      margin-top: 5px;
+    }
+    .work-item:last-child .work-line { display: none; }
+
+    .work-company-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--accent);
+      background: var(--accent-pale);
+      border: 1px solid rgba(184,92,56,0.15);
+      border-radius: 2px;
+      padding: 3px 12px;
+      margin-bottom: 8px;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+    .work-company-tag:hover {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+    .work-company-tag .tag-arrow {
+      width: 10px;
+      height: 10px;
+      transition: transform 0.3s ease;
+      flex-shrink: 0;
+    }
+    .work-company-tag .tag-arrow svg {
+      width: 10px;
+      height: 10px;
+      stroke: currentColor;
+      stroke-width: 1.5;
+      fill: none;
+    }
+    .work-company-tag.open .tag-arrow { transform: rotate(180deg); }
+
+    .work-title {
+      font-family: var(--font-serif), var(--font-chinese);
+      font-size: 17px;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+      font-weight: 400;
+    }
+
+    .work-desc { font-size: 12px; color: var(--text-mid); line-height: 1.9; font-weight: 300; margin-bottom: 0; }
+
+    .work-video-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 10px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      color: var(--text-subtle);
+      text-decoration: none;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 4px 10px 4px 8px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .work-video-link:hover {
+      color: var(--text-primary);
+      border-color: var(--text-mid);
+    }
+    .work-video-link svg { flex-shrink: 0; }
+
+    /* 可展开详情 */
+    .work-detail {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.45s ease, opacity 0.35s ease;
+      opacity: 0;
+    }
+    .work-detail.open {
+      max-height: 600px;
+      opacity: 1;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .work-detail-section {
+      margin-bottom: 16px;
+    }
+    .work-detail-section:last-child { margin-bottom: 0; }
+
+    .work-detail-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--text-subtle);
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+      margin-bottom: 8px;
+    }
+
+    .work-detail-text {
+      font-size: 12px;
+      color: var(--text-mid);
+      line-height: 1.9;
+      font-weight: 300;
+    }
+
+    .work-detail-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .work-detail-tag {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--text-mid);
+      background: var(--bg-deep);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      padding: 3px 10px;
+      letter-spacing: 0.05em;
+    }
+
+    .work-achievement {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 8px;
+      font-size: 12px;
+      color: var(--text-mid);
+      line-height: 1.7;
+      font-weight: 300;
+    }
+    .work-achievement:last-child { margin-bottom: 0; }
+
+    .work-achievement-mark {
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+      margin-top: 7px;
+    }
+
+    /* ══════════════════════════════
+       EGG
+    ══════════════════════════════ */
+    #egg-btn {
+      position: fixed;
+      bottom: 36px;
+      right: 36px;
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-subtle);
+      cursor: pointer;
+      transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: egg-pulse 3.6s ease-in-out infinite;
+    }
+    @keyframes egg-pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(184,92,56,0); }
+      50% { box-shadow: 0 0 0 6px rgba(184,92,56,0.10); }
+    }
+    #egg-btn svg {
+      transition: transform 0.5s cubic-bezier(.34,1.56,.64,1);
+    }
+    #egg-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      box-shadow: 0 4px 24px rgba(184,92,56,0.18);
+      transform: scale(1.12);
+    }
+    #egg-btn:hover svg {
+      transform: rotate(90deg) scale(1.15);
+    }
+
+    #egg-modal { display: none; }
+    #egg-modal.show { display: flex; }
+
+    #egg-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(26,21,18,0.12);
+      backdrop-filter: blur(10px);
+      z-index: 300;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .egg-content {
+      background: var(--bg-card);
+      border: 1px solid var(--border-mid);
+      padding: 56px 56px 40px;
+      max-width: 460px;
+      text-align: center;
+      animation: panelIn 0.5s ease;
+    }
+
+    .egg-warm-text {
+      font-family: var(--font-serif), var(--font-chinese);
+      font-size: 20px;
+      font-weight: 300;
+      font-style: italic;
+      color: #7A5540;
+      letter-spacing: 0.12em;
+      margin-bottom: 40px;
+      text-shadow: 0 1px 12px rgba(184,92,56,0.12);
+      animation: warmFadeIn 1s ease both;
+    }
+    @keyframes warmFadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .egg-close {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.28em;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: transparent;
+      padding: 12px 32px;
+      border-radius: 2px;
+      color: var(--text-subtle);
+      transition: all 0.2s;
+    }
+    .egg-close:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ══════════════════════════════
+       TOAST
+    ══════════════════════════════ */
+    #toast {
+      position: fixed;
+      top: 32px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-80px);
+      background: var(--text-primary);
+      color: var(--bg-card);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      padding: 11px 28px;
+      border-radius: 2px;
+      z-index: 400;
+      transition: transform 0.4s ease;
+      letter-spacing: 0.18em;
+    }
+    #toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* ══════════════════════════════
+       ANIMATIONS
+    ══════════════════════════════ */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* 滚动入场 */
+    .s-card, .collab-group, .book-card, .contact-card {
+      opacity: 0;
+      transform: translateY(14px);
+      transition:
+        opacity 0.65s ease,
+        transform 0.65s ease,
+        background 0.4s;
+    }
+    .s-card.visible,
+    .collab-group.visible,
+    .book-card.visible,
+    .contact-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .s-card:nth-child(1) { transition-delay: 0s; }
+    .s-card:nth-child(2) { transition-delay: 0.12s; }
+    .s-card:nth-child(3) { transition-delay: 0.24s; }
+
+    /* ══════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════ */
+    @media (max-width: 960px) {
+      .container { padding: 0 40px; }
+      .hero-inner, .hero-bottom { padding: 0 40px; }
+      .hero-inner { grid-template-columns: 1fr; gap: 0; }
+      .hero-bottom { padding-bottom: 48px; }
+      .section-cards { grid-template-columns: 1fr; }
+      .collab-grid, .contact-grid, .life-grid-detail { grid-template-columns: 1fr; }
+      section { padding: 88px 0; }
+    }
+
+    @media (max-width: 600px) {
+      .container { padding: 0 24px; }
+      .hero-inner, .hero-bottom { padding: 0 24px; }
+      .hero-meta { flex-direction: column; gap: 20px; }
+      .books-grid { max-width: 100%; grid-template-columns: 1fr; }
+      .book-cover { width: 110px; }
+
+      /* 弹层小屏全屏化，减少左右留白 */
+      .detail-overlay { padding: 0; }
+      .detail-panel { max-width: 100%; min-height: 100vh; border-left: none; border-right: none; }
+      .detail-header { padding: 24px 20px; }
+      .detail-body { padding: 28px 20px 56px; }
+
+      /* 时间线：日期移到内容上方，圆点竖线挂在左侧 */
+      .work-item, .psy-item {
+        display: block;
+        position: relative;
+        padding-left: 20px;
+        margin-bottom: 36px;
+      }
+      .work-year, .psy-year { width: auto; margin-bottom: 6px; padding-top: 0; }
+      .work-dot-line, .psy-dot-line {
+        position: absolute;
+        left: 2px;
+        top: 7px;
+        bottom: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div id="toast">已复制</div>
+
+<div id="egg-modal" onclick="if(event.target===this)closeEgg()">
+  <div class="egg-content" onclick="event.stopPropagation()">
+    <div class="egg-warm-text">很高兴遇见你。</div>
+    <button class="egg-close" onclick="closeEgg()">关闭</button>
+  </div>
+</div>
+
+<button id="egg-btn" onclick="document.getElementById('egg-modal').classList.add('show')" title="彩蛋">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+    <!-- 螺旋星形 / sparkle -->
+    <path d="M12 3 L13.2 9.5 L19.5 7.5 L15 12 L19.5 16.5 L13.2 14.5 L12 21 L10.8 14.5 L4.5 16.5 L9 12 L4.5 7.5 L10.8 9.5 Z"/>
+  </svg>
+</button>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section id="hero">
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-eyebrow">Ethan Yang</div>
+      <h1 class="hero-name">
+        <span class="hero-name-char">杨</span><span class="hero-name-char">惠</span><span class="hero-name-char">东</span>
+      </h1>
+      <p class="hero-tagline">Know something about everything,<br>and know everything about something.</p>
+
+      <div class="hero-meta">
+        <div class="hero-meta-item">
+          <span class="hero-meta-label">Location</span>
+          <span class="hero-meta-value">中国 · 北京</span>
+        </div>
+        <div class="hero-meta-item">
+          <span class="hero-meta-label">Focus</span>
+          <span class="hero-meta-value">用户体验管理 · 团体心理咨询 · 文化科普</span>
+        </div>
+      </div>
+
+      <div class="hero-cta" onclick="document.getElementById('sections').scrollIntoView({behavior:'smooth'})">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.55;animation:bounce 2s ease-in-out infinite;"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="hero-bottom" style="display:none;">
+    <span class="hero-bottom-text">CARIATIVE &nbsp;&middot;&nbsp; UX/UI Designer</span>
+  </div>
+</section>
+
+<!-- ═══════════════ 三板块 ═══════════════ -->
+<section id="sections">
+  <div class="container">
+    <div class="section-cards">
+
+      <div class="s-card" onclick="openDetail('work')">
+        <div class="s-card-icon">
+          <svg viewBox="0 0 24 24"><path d="M4 18 L12 6 L20 18"/></svg>
+        </div>
+        <div class="s-card-title">用户体验管理</div>
+        <div class="s-card-desc">价值-文化-方法-工具</div>
+        <div class="s-card-count">10+行业</div>
+      </div>
+
+      <div class="s-card" onclick="openDetail('psychology')">
+        <div class="s-card-icon">
+          <svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4"/></svg>
+        </div>
+        <div class="s-card-title">心理学学习与实践</div>
+        <div class="s-card-desc">学术研究与心理咨询培训并行，持续深入</div>
+        <div class="s-card-count">Since 2011</div>
+      </div>
+
+      <div class="s-card" onclick="openDetail('life')">
+        <div class="s-card-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg>
+        </div>
+        <div class="s-card-title">生活</div>
+        <div class="s-card-desc">了解更多</div>
+        <div class="s-card-count">Dream not, live.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ 合作 ═══════════════ -->
+<section id="collab">
+  <div class="container">
+    <div class="section-label">合作方向</div>
+    <div class="section-divider"></div>
+    <div class="collab-grid">
+
+      <div class="collab-group">
+        <div class="collab-group-title">商业合作</div>
+        <div class="collab-item">
+          <div class="collab-item-title">用户体验管理咨询</div>
+          <div class="collab-item-desc">产品体验诊断、用户旅程优化、体验指标体系建设、体验文化教育。出行、汽车、智能座舱、加油充电、金融、零售、物流、代驾、货运、UX/UI 等 10+ 行业经验</div>
+        </div>
+        <div class="collab-item">
+          <div class="collab-item-title">用户焦点访谈主持</div>
+          <div class="collab-item-desc">深度访谈设计、FGD 主持、擅长挖掘用户真实心智</div>
+        </div>
+      </div>
+
+      <div class="collab-group">
+        <div class="collab-group-title">个人 & 社群</div>
+        <div class="collab-item">
+          <div class="collab-item-title">跨领域读书会</div>
+          <div class="collab-item-desc">围绕神经科学、心理学、新陈代谢科学与身心健康的跨界阅读，从科学理解人。《燃烧吧，能量》《激素小史》《心理学小史》《美的进化》《心经》等。</div>
+        </div>
+        
+        
+        <div class="collab-item">
+          <div class="collab-item-title">欧文·亚隆团体带领</div>
+          <div class="collab-item-desc">在关系中找到自我、成就自我。</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ 书籍 & 荣誉 ═══════════════ -->
+<section id="works">
+  <div class="container">
+    <div class="section-label">作品</div>
+    <div class="section-divider"></div>
+
+    <div class="books-grid">
+      <div class="book-card">
+        <div class="book-cover"><img class="book-cover-img" src="assets/book-hormones.jpg" alt="激素小史封面"></div>
+        <div class="book-info">
+          <div class="book-title">激素小史</div>
+          <div class="book-meta">中信出版社 · 译者</div>
+        </div>
+      </div>
+      <div class="book-card">
+        <div class="book-cover"><img class="book-cover-img" src="assets/book-burn.jpg" alt="燃烧吧能量封面"></div>
+        <div class="book-info">
+          <div class="book-title">燃烧吧，能量</div>
+          <div class="book-meta">中信出版社 · 译者</div>
+        </div>
+      </div>
+      <div class="book-card book-card-coming">
+        <div class="book-cover">
+          <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="#B85C38" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+          </svg>
+        </div>
+        <div class="book-info">
+          <div class="book-title">心理学小史</div>
+          <div class="book-meta book-meta-coming">出版中</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="honors-label">学习&获奖</div>
+    <div class="honors-list">
+      <div class="honor-item">
+        <div class="honor-mark"></div>
+        <span>2020 中信出版社年度译者</span>
+      </div>
+      <div class="honor-item">
+        <div class="honor-mark"></div>
+        <span>欧文亚隆团体咨询与治疗 · 万生心语（长程）</span>
+      </div>
+      <div class="honor-item">
+        <div class="honor-mark"></div>
+        <span>整合艺术疗愈 · 清华大学第一附属医院国际心身整合疗愈中心</span>
+      </div>
+      <div class="honor-item">
+        <div class="honor-mark"></div>
+        <span>易术心理剧 · 王尔东</span>
+      </div>
+      <div class="honor-item">
+        <div class="honor-mark"></div>
+        <span>孙氏内家拳根基训练</span>
+      </div>
+      <div class="honor-item">
+        <div class="honor-mark"></div>
+        <span>杨氏太极拳 13 式</span>
+      </div>
+      <div class="honor-item">
+        <div class="honor-mark"></div>
+        <span>肌本自然筋膜技法「肌骨功能恢复与呼吸实践」</span>
+      </div>
+      <div class="honor-item">
+        <div class="honor-mark"></div>
+        <span>SCA 咖啡冲煮、感官</span>
+      </div>
+    </div>
+
+
+  </div>
+</section>
+
+<!-- ═══════════════ 联系 ═══════════════ -->
+<section id="contact">
+  <div class="container">
+    <div class="section-label">联系</div>
+    <div class="section-divider"></div>
+    <div class="contact-grid">
+
+      <div class="contact-card" onclick="copyText('huidong_1991', '微信')">
+        <div class="contact-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 4a16 16 0 0 1-8 12.6c-.8.8-1.3 1.2-1.3 1.2s-.1.1-.4-.1c-.3-.2-.4-.3-.4-.3s-.7-.8-1.2-1.3A16 16 0 0 1 2.5 9.5C2.1 9 2.5 8.2 3 7.5c.3-.4.7-.7 1.2-1 .3-.2.6-.3.8-.2.2.1.3.3.2.5 0 .3-.1.6-.2 1-.1.2-.1.3 0 .4.1.1.2.2.3.1.5-.2 1-.3 1.5.1.3.2.5.6.5 1.1 0 .4-.1.8-.2 1.2 0 .1 0 .2.1.3.1.1.2.1.3.1.2 0 .3-.1.4-.2.2-.2.3-.4.5-.6a5 5 0 0 1 .8-.8 5 5 0 0 0-2-1A16 16 0 0 0 2 20c0 4.5 3.5 8 8 8a7.5 7.5 0 0 0 6-3.5s-.2.1-.4.1-.3-.2-.3-.2A18 18 0 0 1 13 23a18 18 0 0 0 7-7 8 8 0 0 1-3.5 2 8 8 0 0 0 3.5-2z"/>
+          </svg>
+        </div>
+        <div class="contact-label">微信</div>
+        <div class="contact-value">huidong_1991</div>
+      </div>
+
+      <div class="contact-card" onclick="copyText('huidong_yang_1991@163.com', '邮箱')">
+        <div class="contact-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="4" width="20" height="16" rx="2"/>
+            <path d="M2 6l10 7 10-7"/>
+          </svg>
+        </div>
+        <div class="contact-label">邮箱</div>
+        <div class="contact-value">huidong_yang_1991<br>@163.com</div>
+      </div>
+
+      <div class="contact-card" onclick="copyText('禅与宇宙探索艺术', '公众号')">
+        <div class="contact-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+        </div>
+        <div class="contact-label">公众号</div>
+        <div class="contact-value">禅与宇宙探索艺术</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ DETAIL: 生活 ═══════════════ -->
+<div class="detail-overlay" id="overlay-life">
+  <div class="detail-backdrop" onclick="closeDetail('life')"></div>
+  <div class="detail-panel">
+    <div class="detail-header">
+      <div class="detail-header-title">
+        <div class="detail-header-mark"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div>
+        <h2>生活</h2>
+      </div>
+      <button class="detail-close" onclick="closeDetail('life')">&times;</button>
+    </div>
+    <div class="detail-body">
+      <div class="life-grid-detail">
+        <div class="life-item">
+          <div class="life-item-mark"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div>
+          <div class="life-item-title">潜水爱好者</div>
+          <div class="life-item-desc">PADI 自由潜水员、水肺潜水员。划水也可以很专业。</div>
+        </div>
+        <div class="life-item">
+          <div class="life-item-mark"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div>
+          <div class="life-item-title">科普译者</div>
+          <div class="life-item-desc">《激素小史》《燃烧吧，能量》《心理学小史》（出版中）译者，中信出版社 2020 年度译者。《神经现实》《环球科学》审校、译者。知识的搬运工。</div>
+        </div>
+        <div class="life-item">
+          <div class="life-item-mark"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div>
+          <div class="life-item-title">航模爱好者</div>
+          <div class="life-item-desc">也能焊一点电路板，修一修小家具什么的。</div>
+        </div>
+        <div class="life-item">
+          <div class="life-item-mark"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div>
+          <div class="life-item-title">传统武术</div>
+          <div class="life-item-desc">太极、形意拳正在探索中，求达人带一带。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ DETAIL: 心理学学习与实践 ═══════════════ -->
+<div class="detail-overlay" id="overlay-psychology">
+  <div class="detail-backdrop" onclick="closeDetail('psychology')"></div>
+  <div class="detail-panel">
+    <div class="detail-header">
+      <div class="detail-header-title">
+        <div class="detail-header-mark"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4"/></svg></div>
+        <h2>心理学学习与实践</h2>
+      </div>
+      <button class="detail-close" onclick="closeDetail('psychology')">&times;</button>
+    </div>
+    <div class="detail-body">
+      <div class="psy-timeline">
+
+        <div class="psy-item">
+          <div class="psy-year">2024–2025</div>
+          <div class="psy-dot-line"><div class="psy-dot"></div><div class="psy-line"></div></div>
+          <div class="psy-content">
+            <div class="psy-title">心理剧</div>
+            <div class="psy-sub">方圆心理 · 导师 王尔东</div>
+            <div class="psy-desc">体验式学习心理剧理论与技术，透过角色扮演、角色交换与镜观，深入个体与环境的关系。</div>
+          </div>
+        </div>
+        <div class="psy-item">
+          <div class="psy-year">2024–2025</div>
+          <div class="psy-dot-line"><div class="psy-dot"></div><div class="psy-line"></div></div>
+          <div class="psy-content">
+            <div class="psy-title">欧文·亚隆模式团体咨询</div>
+            <div class="psy-sub">万生心语 · 导师 （多名）</div>
+            <div class="psy-desc">系统学习亚隆人际取向团体治疗模式，在安全的关系容器中体验并理解人际互动的深层动力，运用“此时此地”的方法带领团体。</div>
+          </div>
+        </div>
+        <div class="psy-item">
+          <div class="psy-year">2025</div>
+          <div class="psy-dot-line"><div class="psy-dot"></div><div class="psy-line"></div></div>
+          <div class="psy-content">
+            <div class="psy-title">艺术整合疗愈</div>
+            <div class="psy-sub">万生心语 · 导师 Michelle Dean</div>
+            <div class="psy-desc">学习艺术整合疗愈，借助绘画、拼贴等艺术媒介探索与表达内在情感，拓展非语言的自我觉察路径。</div>
+          </div>
+        </div>
+        <div class="psy-item">
+          <div class="psy-year">2022</div>
+          <div class="psy-dot-line"><div class="psy-dot"></div><div class="psy-line"></div></div>
+          <div class="psy-content">
+            <div class="psy-title">安宁疗护</div>
+            <div class="psy-sub">荣基金</div>
+            <div class="psy-desc">接受安宁疗护专业培训，学习陪伴临终患者及其家属的沟通与支持技术，理解生命终点的心理与灵性需求。</div>
+          </div>
+        </div>
+        <div class="psy-item">
+          <div class="psy-year">2018–今</div>
+          <div class="psy-dot-line"><div class="psy-dot"></div><div class="psy-line"></div></div>
+          <div class="psy-content">
+            <div class="psy-title">个人体验</div>
+            <div class="psy-sub">持续进行中</div>
+            <div class="psy-desc">持续进行个人心理咨询体验，深化自我觉察与内在成长。</div>
+          </div>
+        </div>
+        <div class="psy-item">
+          <div class="psy-year">2014–2015</div>
+          <div class="psy-dot-line"><div class="psy-dot"></div><div class="psy-line"></div></div>
+          <div class="psy-content">
+            <div class="psy-title">儿童家庭与社会环境研究</div>
+            <div class="psy-sub">哥伦布市人力资源研究中心</div>
+            <div class="psy-desc">大量采访家庭，并完成为期一周跟踪研究；调查 11-18 岁儿童家庭环境、健康、社会认知与日常活动；协助问卷编写与实验设计，培训与督导新员工。</div>
+          </div>
+        </div>
+        <div class="psy-item">
+          <div class="psy-year">2012–2014</div>
+          <div class="psy-dot-line"><div class="psy-dot"></div><div class="psy-line"></div></div>
+          <div class="psy-content">
+            <div class="psy-title">青年边缘人群心理评估</div>
+            <div class="psy-sub">俄亥俄州立大学人类发展与家庭科学系</div>
+            <div class="psy-desc">与青年发展期的社会边缘人群建立真实关系，通过互动、陪伴、教育帮助其融入社会。心理评估、社会捐赠管理、房屋日常修缮。</div>
+          </div>
+        </div>
+        <div class="psy-item">
+          <div class="psy-year">2012–2013</div>
+          <div class="psy-dot-line"><div class="psy-dot"></div><div class="psy-line"></div></div>
+          <div class="psy-content">
+            <div class="psy-title">社会认知心理学独立研究</div>
+            <div class="psy-sub">俄亥俄州立大学心理系 · 导师 Dr. Richard Petty</div>
+            <div class="psy-desc">完善 ELM 模型，探究广告文化倾向与认知的关系。获奖论文（Summer fellowship & 优秀实验设计）。</div>
+          </div>
+        </div>
+        <div class="psy-item">
+          <div class="psy-year">2013</div>
+          <div class="psy-dot-line"><div class="psy-dot"></div><div class="psy-line"></div></div>
+          <div class="psy-content">
+            <div class="psy-title">自杀干预咨询</div>
+            <div class="psy-sub">俄亥俄州立大学心理咨询中心</div>
+            <div class="psy-desc">为期 8 个月电话干预培训与咨询，学习危机评估与即时干预。</div>
+          </div>
+        </div>
+        <div class="psy-item">
+          <div class="psy-year">2010–2013</div>
+          <div class="psy-dot-line"><div class="psy-dot"></div><div class="psy-line"></div></div>
+          <div class="psy-content">
+            <div class="psy-title">心理学专业</div>
+            <div class="psy-sub">俄亥俄州立大学 · 理学学士 · Magna Cum Laude</div>
+            <div class="psy-desc">社会心理学与社会神经学方向。在校期间担任国际学生Mentor及优秀教师评委。</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ DETAIL: 用户体验管理 ═══════════════ -->
+<div class="detail-overlay" id="overlay-work">
+  <div class="detail-backdrop" onclick="closeDetail('work')"></div>
+  <div class="detail-panel">
+    <div class="detail-header">
+      <div class="detail-header-title">
+        <div class="detail-header-mark"><svg viewBox="0 0 24 24"><path d="M4 18 L12 6 L20 18"/></svg></div>
+        <h2>用户体验管理</h2>
+      </div>
+      <button class="detail-close" onclick="closeDetail('work')">&times;</button>
+    </div>
+    <div class="detail-body">
+      <div class="work-timeline-detail">
+        <div class="work-item">
+          <div class="work-year">2024–今</div>
+          <div class="work-dot-line"><div class="work-dot"></div><div class="work-line"></div></div>
+          <div class="work-content">
+            <span class="work-company-tag" onclick="toggleWorkDetail(this)">Cariad Technology <span class="tag-arrow"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span></span>
+            <div class="work-title">体验研究与可用性测试</div>
+            <div class="work-desc">为智能座舱 UX/UI 和产品设计提供决策支持，建设用户体验软硬件能力，聚焦 AI、ADAS/AVM、Design System 相关方向。</div>
+            <a class="work-video-link" href="https://channels.weixin.qq.com/finder-preview/pages/feed?entry_card_type=48&comment_scene=39&appid=51&token=WdF%2BOwgBEAMaIAgEEhwxNzc3MDEwMzM2MzkyNjY0MzM3NG9RUDVJb2xOIhgIAxIUCAMSEIUCD%2BXqb0ds%2F6aIUFvERls%3D&entry_scene=51&eid=export%2FUzFfAgtgekIEAQAAAAAAvXgBEYzLewAAAAstQy6ubaLX4KHWvLEZgBPE0pMYXRAsAYOEzNPgMFkNAbsoYeUEtcPQDztA3YDylChVcIrulg" target="_blank" rel="noopener">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              We Are Developers — 团队介绍视频
+            </a>
+          </div>
+        </div>
+
+        <div class="work-item">
+          <div class="work-year">11/2022 – 05/2023</div>
+          <div class="work-dot-line"><div class="work-dot"></div><div class="work-line"></div></div>
+          <div class="work-content">
+            <span class="work-company-tag" onclick="toggleWorkDetail(this)">度小满金融科技 <span class="tag-arrow"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span></span>
+            <div class="work-title">高级商业分析专家</div>
+            <div class="work-desc">搭建 CEM 体验管理平台，整合调研满意度、预测满意度、VOC、NLP多渠道数据，挖掘用户画像与经营机会。</div>
+            <div class="work-detail">
+              <div class="work-detail-section">
+                <div class="work-detail-text">因业务方向调整，于通过试用期后裁员</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="work-item">
+          <div class="work-year">09/2021 – 02/2022</div>
+          <div class="work-dot-line"><div class="work-dot"></div><div class="work-line"></div></div>
+          <div class="work-content">
+            <span class="work-company-tag" onclick="toggleWorkDetail(this)">京东（京喜事业群） <span class="tag-arrow"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span></span>
+            <div class="work-title">体验运营专家（团队负责人）</div>
+            <div class="work-desc">为零售、社区团购、便利店业务搭建体验指标体系，建设体验数据看板；分析洞察体验问题并指导业务改善。</div>
+            <div class="work-detail">
+              <div class="work-detail-section">
+                <div class="work-detail-text">因肺炎久治未愈离职，Gap 9个月。恢复后进行体验管理咨询与用户研究相关Freelancer工作</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="work-item">
+          <div class="work-year">08/2018 – 09/2021</div>
+          <div class="work-dot-line"><div class="work-dot"></div><div class="work-line"></div></div>
+          <div class="work-content">
+            <span class="work-company-tag" onclick="toggleWorkDetail(this)">滴滴出行（EMC / UDC） <span class="tag-arrow"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span></span>
+            <div class="work-title">体验研究</div>
+            <div class="work-desc">集团体验战略规划（范出行、金融、保险等业务线）；集团体验平台与工具建设（降本70%+）；制定所有业务线体验研究方案（NPS/满意度），从调研方法、数据库建设、UI展示，全面确保科学性；业务体验提升（获风险值改善最佳 FT）；体验文化建设（2020&2021 用户体验明星讲师）。</div>
+            <div class="work-detail">
+              <div class="work-detail-section">
+                <div class="work-detail-text">真心实意创造用户价值是一切的基础</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="work-item">
+          <div class="work-year">10/2016 – 08/2018</div>
+          <div class="work-dot-line"><div class="work-dot"></div><div class="work-line"></div></div>
+          <div class="work-content">
+            <span class="work-company-tag" onclick="toggleWorkDetail(this)">尼尔森（消费者洞察·汽车组） <span class="tag-arrow"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span></span>
+            <div class="work-title">高级分析员</div>
+            <div class="work-desc">研究豪华品牌汽车行业趋势（奔驰、宝马、奥迪、大众等），开展定性/定量研究并撰写报告。在中国十余个城市及德国执行和监管项目。</div>
+            <div class="work-detail">
+              <div class="work-detail-section">
+                <div class="work-detail-text">长期心理学研究带来的人性洞察能力是我区别于其他同行的最大因素</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="work-item">
+          <div class="work-year">10/2015 – 10/2016</div>
+          <div class="work-dot-line"><div class="work-dot"></div><div class="work-line"></div></div>
+          <div class="work-content">
+            <span class="work-company-tag" onclick="toggleWorkDetail(this)">艾恩睿信息咨询 <span class="tag-arrow"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span></span>
+            <div class="work-title">数据分析员</div>
+            <div class="work-desc">研究快消、宠物行业及用户群体，分析零售品类结构、销售趋势、促销效果与新品表现。负责中国 RMS（Retail Measurement Service）业务全球市场报告撰写与销售。</div>
+            <div class="work-detail">
+              <div class="work-detail-section">
+                <div class="work-detail-text"><a href="https://www.circana.com/" target="_blank">https://www.circana.com/</a></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function openDetail(type) {
+    document.getElementById('overlay-' + type).classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function toggleWorkDetail(tag) {
+    // 关闭同级其他展开项
+    document.querySelectorAll('.work-company-tag.open').forEach(t => {
+      if (t !== tag) {
+        t.classList.remove('open');
+        t.closest('.work-content').querySelector('.work-detail').classList.remove('open');
+      }
+    });
+    // 切换当前项
+    tag.classList.toggle('open');
+    const detail = tag.closest('.work-content').querySelector('.work-detail');
+    detail.classList.toggle('open');
+  }
+
+  function closeDetail(type) {
+    document.getElementById('overlay-' + type).classList.remove('show');
+    document.body.style.overflow = '';
+  }
+
+  function closeEgg() {
+    document.getElementById('egg-modal').classList.remove('show');
+  }
+
+  function copyText(text, label) {
+    navigator.clipboard.writeText(text).then(() => {
+      const toast = document.getElementById('toast');
+      toast.textContent = label + ' 已复制';
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2000);
+    });
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      closeDetail('life');
+      closeDetail('psychology');
+      closeDetail('work');
+      closeEgg();
+    }
+  });
+
+  // 滚动入场动画
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.s-card, .collab-group, .book-card, .contact-card').forEach(el => {
+    observer.observe(el);
+  });
+
+</script>
+</body>
+</html>

@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>东京 · 河口湖 · 京都大阪 九日</title>
+<link rel="stylesheet" href="leaflet/leaflet.css">
+<style>
+  :root{
+    --paper:#FAFAF8; --ink:#1A1A1A; --muted:#6B6B66; --accent:#4A5D52;
+    --line:#E8E6E1; --soft:#F2F1EC;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    line-height:1.6;-webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:26px 18px 60px}
+  h1{font-size:clamp(20px,5.4vw,28px);font-weight:600;letter-spacing:.02em;margin:0 0 6px}
+  .sub{color:var(--muted);font-size:13.5px;margin:0 0 20px}
+  .bar{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 10px}
+  .bar.sec{margin-bottom:16px}
+  button.chip{
+    font:inherit;font-size:13.5px;padding:7px 14px;border-radius:999px;
+    border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer;
+    transition:.16s;
+  }
+  button.chip:hover{border-color:#CFCCC5}
+  button.chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  #map{
+    height:58vh;min-height:340px;border:1px solid var(--line);border-radius:10px;
+    background:var(--soft);
+  }
+  .legend{color:var(--muted);font-size:12.5px;margin:10px 2px 26px}
+  .day{margin:0 0 30px}
+  .day h2{
+    font-size:15px;font-weight:600;margin:0 0 4px;display:flex;align-items:baseline;gap:9px;
+  }
+  .day h2 .tag{
+    font-size:12px;font-weight:600;color:#fff;background:var(--accent);
+    padding:2px 8px;border-radius:999px;
+  }
+  .day .note{color:var(--muted);font-size:12.8px;margin:0 0 12px}
+  ul.stops{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+  ul.stops li{
+    display:flex;gap:14px;padding:13px 2px;border-bottom:1px solid var(--line);
+    cursor:pointer;align-items:flex-start;
+  }
+  ul.stops li:hover{background:#fff}
+  .t{flex:0 0 52px;color:var(--muted);font-size:13px;font-variant-numeric:tabular-nums;padding-top:1px}
+  .n{flex:0 0 20px;text-align:right;color:#A9A69F;font-size:11.5px;padding-top:3px;font-variant-numeric:tabular-nums}
+  .body{flex:1;min-width:0;word-break:break-word}
+  .name{display:block;font-size:14.5px;font-weight:500;line-height:1.45}
+  .jp{display:block;color:var(--muted);font-size:12.5px;margin-top:2px;line-height:1.4}
+  .act{
+    flex:0 0 auto;font-size:12.5px;color:var(--accent);text-decoration:none;
+    border:1px solid #D8E3DA;border-radius:999px;padding:4px 11px;background:#fff;white-space:nowrap;
+  }
+  .act:hover{background:#F3F7F4}
+  .todo{color:#A08A5B}
+  footer{color:var(--muted);font-size:12px;border-top:1px solid var(--line);padding-top:14px;margin-top:10px}
+  .pin{
+    display:flex;align-items:center;justify-content:center;
+    width:26px;height:26px;border-radius:50%;background:#fff;color:var(--ink);
+    font:600 11.5px/1 -apple-system,sans-serif;border:1.6px solid var(--accent);
+    box-shadow:0 1px 3px rgba(0,0,0,.14);
+  }
+  .pin.d2{border-color:#8A6A4F} .pin.d3{border-color:#5B6E8C} .pin.d4{border-color:#7A5B7A}
+  .pin.d5{border-color:#6E7A4E} .pin.d6{border-color:#9C5F4C} .pin.d7{border-color:#4E7A78}
+  .pin.d8{border-color:#A8743F} .pin.d9{border-color:#5A5A66}
+  .pin.todo{border-style:dashed;color:#A08A5B;border-color:#A08A5B}
+  .leaflet-popup-content{font-size:13px;line-height:1.55;margin:10px 12px}
+  .leaflet-popup-content b{font-weight:600}
+  .leaflet-popup-content .pjp{color:#6B6B66;font-size:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>东京 · 河口湖 · 京都大阪</h1>
+  <p class="sub">11 月 13 日 — 11 月 21 日 · 东京四天、富士山下的河口湖两天，再一路往西到京都、大阪</p>
+
+  <div class="bar" id="daybar">
+    <button class="chip on" data-day="all">全部</button>
+    <button class="chip" data-day="d1">13 日</button>
+    <button class="chip" data-day="d2">14 日</button>
+    <button class="chip" data-day="d3">15 日</button>
+    <button class="chip" data-day="d4">16 日</button>
+    <button class="chip" data-day="d5">17 日</button>
+    <button class="chip" data-day="d6">18 日</button>
+    <button class="chip" data-day="d7">19 日</button>
+    <button class="chip" data-day="d8">20 日</button>
+    <button class="chip" data-day="d9">21 日</button>
+  </div>
+  <div class="bar sec">
+    <button class="chip" data-view="tokyo">看东京</button>
+    <button class="chip" data-view="fuji">看河口湖</button>
+    <button class="chip" data-view="kansai">看京都 · 大阪</button>
+  </div>
+
+  <div id="map"></div>
+  <p class="legend">点下面任何一条，地图就跳到那里。左边的编号和地图上的编号是一对。13 日深绿、14 日棕、15 日蓝、16 日紫、17 日橄榄、18 日砖红、19 日青、20 日赭、21 日灰；带虚线边框的是还没定下来的住处。</p>
+
+  <section class="day" data-day="d1">
+    <h2><span class="tag">13 日</span>周五 · 落地到浅草</h2>
+    <p class="note">落地 12:50 在羽田第 3 航站楼。</p>
+    <ul class="stops">
+      <li data-lat="35.5450" data-lng="139.7680" data-zoom="14">
+        <span class="t">12:50</span>
+        <span class="body"><span class="name">羽田机场 第 3 航站楼</span><span class="jp">羽田空港 第3ターミナル · 落地</span></span>
+        <a class="act" href="https://www.google.com/maps/search/?api=1&query=35.5450,139.7680" target="_blank" rel="noopener">地图</a>
+      </li>
+      <li data-lat="35.7140" data-lng="139.7966" data-zoom="16">
+        <span class="t">14:00</span>
+        <span class="body"><span class="name">浅草寺</span><span class="jp">浅草寺 · 雷門 / 仲見世通り</span></span>
+        <a class="act" href="https://www.google.com/maps/search/?api=1&query=35.7140,139.7966" target="_blank" rel="noopener">地图</a>
+      </li>
+      <li data-lat="35.7101" data-lng="139.8107" data-zoom="16">
+        <span class="t">17:00</span>
+        <span class="body"><span class="name">东京晴空塔</span><span class="jp">東京スカイツリー · 押上</span></span>
+        <a class="act" href="https://www.google.com/maps/search/?api=1&query=35.7101,139.8107" target="_blank" rel="noopener">地图</a>
+      </li>
+    </ul>
+  </section>
+
+  <section class="day" data-day="d2">
+    <h2><span class="tag">14 日</span>周六 · 丰洲与台场</h2>
+    <p class="note">teamLab 是按场次进的，得提前订好时间。</p>
+    <ul class="stops">
+      <li data-lat="35.6489" data-lng="139.7900" data-zoom="15">
+        <span class="t">10:00</span>
+        <span class="body"><span class="name">teamLab Planets TOKYO DMM</span><span class="jp">チームラボプラネッツ · 豊洲</span></span>
+        <a class="act" href="https://www.google.com/maps/search/?api=1&query=35.6489,139.7900" target="_blank" rel="noopener">地图</a>
+      </li>
+      <li data-lat="35.6250" data-lng="139.7748" data-zoom="16">
+        <span class="t">13:00</span>
+        <span class="body"><span class="name">实物大独角兽高达立像</span><span class="jp">ユニコーンガンダム立像 · ダイバーシティ東京</span></span>
+        <a class="act" href="https://www.google.com/maps/search/?api=1&query=35.6250,139.7748" target="_blank" rel="noopener">地图</a>
+      </li>
+      <li data-lat="35.6192" data-lng="139.7767" data-zoom="16">
+        <span class="t">15:00</span>
+        <span class="body"><span class="name">日本科学未来馆</span><span class="jp">日本科学未来館 · 青海</span></span>
+        <a class="act" href="https://www.google.com/maps/search/?api=1&query=35.6192,139.7767" target="_blank" rel="noopener">地图</a>
+      </li>
+    </ul>
+  </section>
+
+  <section class="day" data-day="d3">
+    <h2><span class="tag">15 日</span>周日 · 进河口湖</h2>
+    <p class="note">东京站 08:30 上车，路上约两小时。</p>
+    <ul class="stops">
+      <li data-lat="35.6812" data-lng="139.7671" data-zoom="15">
+        <span class="t">08:30</span>
+        <span class="body"><span class="name">东京站</span><span class="jp">東京駅 · 出发</span></span>
+        <a class="act" href="https://www.google.com/maps/search/?api=1&query=35.6812,139.7671" target="_blank" rel="noopener">地图</a>
+      </li>
+      <li data-lat="35.4978" data-lng="138.7694" data-zoom="14">
+        <span class="t">10:30</span>
+        <span class="body"><span class="name">河口湖站</span><span class="jp">河口湖駅 · 到站，换周游巴士</span></span>
+        <a class="act" href="https://www.google.com/maps/search/?api=1&query=35.4978,138.7694" target="_blank" rel="noopener">地图</a>
+      </li>
+      <li data-lat="35.5194" data-lng="138.7421" data-zoom="15">
+        <span class="t">11:00</span>
+        <span class="body"><span class="name">大石公园</span><span class="jp">大石公園 · 湖岸花径，正面看富士山</span></span>
+        <a class="act" href="https://www.google.com/maps/search/?api=1&query=35.5194,138.7421" target="_blank" rel="noopener">地图</a>
+      </li>
+      <li data-lat="35.5185" data-lng="138.7685" data-zoom="15">
+        <span class="t">12:30</span>
+        <span class="body"><span class="name">红叶回廊</span><span class="jp">紅葉回廊 · 河口湖北岸，美术馆一带</span></span>
+        <a class="act" href="https://www.google.com/maps/search/?api=1&query=35.5185,138.7685" target="_blank" rel="noopener">地图</a>
+      </li>
+      <li data-lat="35.5150" data-lng="138.7490" data-zoom="14" class="todo-item">
+        <span class="t">16:00</span>
+        <span class="body"><span class="name todo">河口湖温泉旅馆</span><span class="jp">还没定，标记是湖边的示意位置</span></span>
+      </li>
+    </ul>
+  </section>
+
+  <section class="day" data-day="d4">
+    <h2><span class="tag">16 日</span>周一 · 回东京</h2>
+    <p class="note">早上七点先去看逆富士，再回站坐车。</p>
+    <ul class="stops">
+      <li data-lat="35.5128" data-lng="138.7660" data-zoom="16">
+        <span class="t">07:00</span>
+        <span class="body"><span class="name">产屋崎</span><span class="jp">産屋ヶ崎 · 湖面上倒立的富士山</span></span>
+        <a class="act" href="https://www.google.com/maps/search/?api=1&query=35.5128,138.7660" target="_blank" rel="noopener">地图</a>
+      </li>
+      <li data-lat="35.4978" data-lng="138.7694" data-zoom="14">
+        <span class="t">10:30</span>
+        <span class="body"><span class="name">河口湖站</span><span class="jp">河口湖駅 · 返程上车</span></span>
+        <a class="act" href="https://www.google.com/maps/search/?api=1&query=35.4978,138.7694" target="_blank" rel="noopener">地图</a>
+      </li>
+      <li data-lat="35.6812" data-lng="139.7671" data-zoom="15">
+        <span class="t">12:30</span>
+        <span class="body"><span class="name">东京站</span><span class="jp">東京駅 · 到站</span></span>
+        <a class="act" href="https://www.google.com/maps/search/?api=1&query=35.6812,139.7671" target="_blank" rel="noopener">地图</a>
+      </li>
+      <li data-lat="35.6795" data-lng="139.7645" data-zoom="14" class="todo-item">
+        <span class="t">14:00</span>
+        <span class="body"><span class="name todo">东京的酒店</span><span class="jp">还没定，标记是东京站附近的示意位置</span></span>
+      </li>
+    </ul>
+  </section>
+
+  <section class="day" data-day="d5">
+    <h2><span class="tag">17 日</span>周二 · 告别东京，进京都</h2>
+    <p class="note">上午新宿御苑；12:00 午饭，饭后各自分流；14:00 东京站上车，东海道新干线到京都约两小时。</p>
+    <ul class="stops">
+      <li data-lat="35.6853" data-lng="139.7082" data-zoom="15">
+        <span class="t">09:30</span>
+        <span class="body"><span class="name">新宿御苑</span><span class="jp">新宿御苑 · 东京的最后一处</span></span>
+        <a class="act" href="https://www.google.com/maps/search/?api=1&query=35.6853,139.7082" target="_blank" rel="noopener">地图</a>
+      </li>
+      <li data-lat="35.6812" data-lng="139.7671" data-zoom="15">
+        <span class="t">14:00</span>
+        <span class="body"><span class="name">东京站</span><span class="jp">東京駅 · 上车</span></span>
+        <a class="act" href="https://www.google.com/maps/search/?api=1&query=35.6812,139.7671" target="_blank" rel="noopener">地图</a>
+      </li>
+      <li data-lat="34.9853" data-lng="135.7585" data-zoom="15">
+        <span class="t">16:30</span>
+        <span class="body"><span class="name">京都站</span><span class="jp">京都駅 · 到站</span></span>
+        <a class="act" href="https://www.google.com/maps/search/?api=1&query=34.9853,135.7585" target="_blank" rel="noopener">地图</a>
+      </li>
+      <li data-lat="34.9880" data-lng="135.7560" data-zoom="14" class="todo-item">
+        <span class="t">17:00</span>
+        <span class="body"><span class="name todo">京都的酒店</span><span class="jp">还没定，标记是京都站附近的示意位置</span></span>
+      </li>
+    </ul>
+  </section>
+
+  <section class="day" data-day="d6">
+    <h2><span class="tag">18 日</span>周三 · 京都一天三处</h2>
+    <p class="note">清水寺在东山南边，岚山在西边，永观堂又回东山——三处三个方向，路上要留足时间。</p>
+    <ul class="stops">
+      <li data-lat="34.9948" data-lng="135.7851" data-zoom="16">
+        <span class="t">09:00</span>
+        <span class="body"><span class="name">清水寺</span><span class="jp">清水寺 · 清水の舞台</span></span>
+        <a class="act" href="https://www.google.com/maps/search/?api=1&query=34.9948,135.7851" target="_blank" rel="noopener">地图</a>
+      </li>
+      <li data-lat="35.0116" data-lng="135.6756" data-zoom="15">
+        <span class="t">13:00</span>
+        <span class="body"><span class="name">岚山</span><span class="jp">嵐山 · 渡月橋、竹林</span></span>
+        <a class="act" href="https://www.google.com/maps/search/?api=1&query=35.0116,135.6756" target="_blank" rel="noopener">地图</a>
+      </li>
+      <li data-lat="35.0138" data-lng="135.7957" data-zoom="16">
+        <span class="t">17:30</span>
+        <span class="body"><span class="name">永观堂（禅林寺）</span><span class="jp">永観堂 禅林寺 · 傍晚看夜楓</span></span>
+        <a class="act" href="https://www.google.com/maps/search/?api=1&query=35.0138,135.7957" target="_blank" rel="noopener">地图</a>
+      </li>
+    </ul>
+  </section>
+
+  <section class="day" data-day="d7">
+    <h2><span class="tag">19 日</span>周四 · 京都到大阪</h2>
+    <p class="note">京都到大阪，新快速半小时左右；行李可以先寄存在酒店，晚上再办入住。</p>
+    <ul class="stops">
+      <li data-lat="34.9853" data-lng="135.7585" data-zoom="15">
+        <span class="t">09:00</span>
+        <span class="body"><span class="name">京都站</span><span class="jp">京都駅 · 出发</span></span>
+        <a class="act" href="https://www.google.com/maps/search/?api=1&query=34.9853,135.7585" target="_blank" rel="noopener">地图</a>
+      </li>
+      <li data-lat="34.7025" data-lng="135.4936" data-zoom="15">
+        <span class="t">10:00</span>
+        <span class="body"><span class="name">大阪站</span><span class="jp">大阪駅 · 到站</span></span>
+        <a class="act" href="https://www.google.com/maps/search/?api=1&query=34.7025,135.4936" target="_blank" rel="noopener">地图</a>
+      </li>
+      <li data-lat="34.6874" data-lng="135.5258" data-zoom="16">
+        <span class="t">10:30</span>
+        <span class="body"><span class="name">大阪城</span><span class="jp">大阪城天守閣 · 大阪城公園</span></span>
+        <a class="act" href="https://www.google.com/maps/search/?api=1&query=34.6874,135.5258" target="_blank" rel="noopener">地图</a>
+      </li>
+      <li data-lat="34.6685" data-lng="135.5032" data-zoom="16">
+        <span class="t">14:30</span>
+        <span class="body"><span class="name">道顿堀</span><span class="jp">道頓堀 · 运河两岸</span></span>
+        <a class="act" href="https://www.google.com/maps/search/?api=1&query=34.6685,135.5032" target="_blank" rel="noopener">地图</a>
+      </li>
+      <li data-lat="34.6690" data-lng="135.4990" data-zoom="14" class="todo-item">
+        <span class="t">19:00</span>
+        <span class="body"><span class="name todo">大阪的酒店</span><span class="jp">还没定，标记是道顿堀一带的示意位置</span></span>
+      </li>
+    </ul>
+  </section>
+
+  <section class="day" data-day="d8">
+    <h2><span class="tag">20 日</span>周五 · 大阪逛街</h2>
+    <p class="note">心斋桥和道顿堀是连着的；通天阁在南边的新世界。晚上 19:00 之后留了自由活动。</p>
+    <ul class="stops">
+      <li data-lat="34.6738" data-lng="135.5010" data-zoom="16">
+        <span class="t">09:00</span>
+        <span class="body"><span class="name">心斋桥筋</span><span class="jp">心斎橋筋商店街</span></span>
+        <a class="act" href="https://www.google.com/maps/search/?api=1&query=34.6738,135.5010" target="_blank" rel="noopener">地图</a>
+      </li>
+      <li data-lat="34.6685" data-lng="135.5032" data-zoom="16">
+        <span class="t">12:30</span>
+        <span class="body"><span class="name">道顿堀</span><span class="jp">道頓堀 · 午饭</span></span>
+        <a class="act" href="https://www.google.com/maps/search/?api=1&query=34.6685,135.5032" target="_blank" rel="noopener">地图</a>
+      </li>
+      <li data-lat="34.6524" data-lng="135.5063" data-zoom="16">
+        <span class="t">15:30</span>
+        <span class="body"><span class="name">通天阁</span><span class="jp">通天閣 · 新世界</span></span>
+        <a class="act" href="https://www.google.com/maps/search/?api=1&query=34.6524,135.5063" target="_blank" rel="noopener">地图</a>
+      </li>
+    </ul>
+  </section>
+
+  <section class="day" data-day="d9">
+    <h2><span class="tag">21 日</span>周六 · 从难波去机场</h2>
+    <p class="note">难波到关西机场，南海特急四十分钟上下。</p>
+    <ul class="stops">
+      <li data-lat="34.6676" data-lng="135.5017" data-zoom="15">
+        <span class="t">08:30</span>
+        <span class="body"><span class="name">难波站</span><span class="jp">難波駅 · 出发</span></span>
+        <a class="act" href="https://www.google.com/maps/search/?api=1&query=34.6676,135.5017" target="_blank" rel="noopener">地图</a>
+      </li>
+      <li data-lat="34.4306" data-lng="135.2304" data-zoom="13">
+        <span class="t">09:30</span>
+        <span class="body"><span class="name">关西国际机场</span><span class="jp">関西国際空港 · 第 1 航站楼</span></span>
+        <a class="act" href="https://www.google.com/maps/search/?api=1&query=34.4306,135.2304" target="_blank" rel="noopener">地图</a>
+      </li>
+    </ul>
+  </section>
+
+  <footer>
+    底图：日本国土地理院。右侧「地图」按钮打开的是 Google 地图，在日本用得上，国内打不开。
+  </footer>
+</div>
+
+<script src="leaflet/leaflet.js"></script>
+<script>
+const DAYS = {
+  d1:{color:'#4A5D52', label:'13'},
+  d2:{color:'#8A6A4F', label:'14'},
+  d3:{color:'#5B6E8C', label:'15'},
+  d4:{color:'#7A5B7A', label:'16'},
+  d5:{color:'#6E7A4E', label:'17'},
+  d6:{color:'#9C5F4C', label:'18'},
+  d7:{color:'#4E7A78', label:'19'},
+  d8:{color:'#A8743F', label:'20'},
+  d9:{color:'#5A5A66', label:'21'}
+};
+const AREA = {
+  tokyo:{center:[35.66,139.78],zoom:11},
+  fuji:{center:[35.512,138.755],zoom:12},
+  kansai:{center:[34.83,135.63],zoom:10}
+};
+
+const map = L.map('map',{scrollWheelZoom:true,zoomControl:true}).setView(AREA.tokyo.center, AREA.tokyo.zoom);
+
+// 支持 ?area=fuji / ?area=kansai 直接开在那边（手机上存几个书签很方便）
+const startArea = new URLSearchParams(location.search).get('area');
+if(startArea && AREA[startArea]){ map.setView(AREA[startArea].center, AREA[startArea].zoom); }
+
+const pale = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png',{
+  maxZoom:18, attribution:'国土地理院'
+}).addTo(map);
+const photo = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/ort/{z}/{x}/{y}.jpg',{
+  maxZoom:18, attribution:'国土地理院'
+});
+
+const layers = {};      // day -> layerGroup
+const markers = [];     // {day, marker, li}
+let seq = 0;            // 全局编号，避免每天从 1 开始重复
+
+document.querySelectorAll('.day').forEach((sec, di)=>{
+  const day = sec.dataset.day;
+  const color = DAYS[day].color;
+  const g = L.layerGroup().addTo(map);
+  layers[day] = g;
+  const pts = [];
+  let idx = 0;
+
+  sec.querySelectorAll('ul.stops li').forEach(li=>{
+    idx++;
+    const lat = +li.dataset.lat, lng = +li.dataset.lng, zoom = +(li.dataset.zoom||15);
+    const isTodo = li.classList.contains('todo-item');
+    const num = ++seq;
+    const name = li.querySelector('.name').textContent.trim();
+    const jp = li.querySelector('.jp').textContent.trim();
+    const time = li.querySelector('.t').textContent.trim();
+
+    const icon = L.divIcon({
+      className:'', iconSize:[26,26], iconAnchor:[13,13],
+      html:`<div class="pin ${day}${isTodo?' todo':''}">${isTodo?'?':num}</div>`
+    });
+    const m = L.marker([lat,lng],{icon,title:name}).addTo(g);
+    m.bindPopup(`<b>${time}　${name}</b><br><span class="pjp">${jp}</span>`);
+
+    pts.push([lat,lng]);
+    markers.push({day, marker:m, li, zoom, lat, lng});
+    li.insertAdjacentHTML('afterbegin', `<span class="n">${isTodo?'·':num}</span>`);
+
+    li.addEventListener('click', e=>{
+      if(e.target.closest('a')) return;
+      map.flyTo([lat,lng], zoom, {duration:.7});
+      m.openPopup();
+    });
+  });
+
+  if(pts.length>1){
+    L.polyline(pts,{color, weight:2, opacity:.55}).addTo(g);
+  }
+});
+
+// 仅显示某一天的折线（分隔天之间不连线）
+function showDay(day){
+  Object.entries(layers).forEach(([k,g])=>{
+    if(day==='all') g.addTo(map);
+    else if(k===day) g.addTo(map);
+    else map.removeLayer(g);
+  });
+}
+
+// 选某一天时，把镜头收到那天的范围；选「全部」就收到整趟行程
+function fitVisible(){
+  const pts = markers.filter(o=>layers[o.day] && map.hasLayer(layers[o.day]))
+                     .map(o=>[o.lat,o.lng]);
+  if(pts.length>1) map.fitBounds(L.latLngBounds(pts).pad(.18), {animate:true});
+  else if(pts.length===1) map.setView(pts[0], 14, {animate:true});
+}
+
+document.querySelectorAll('#daybar .chip').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('#daybar .chip').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on');
+    showDay(b.dataset.day);
+    fitVisible();
+  });
+});
+
+document.querySelectorAll('[data-view]').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('[data-view]').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on');
+    const a = AREA[b.dataset.view];
+    map.flyTo(a.center, a.zoom, {duration:.9});
+  });
+});
+
+// 进场时按已有空间铺开
+map.whenReady(()=>setTimeout(()=>map.invalidateSize(),120));
+</script>
+</body>
+</html>

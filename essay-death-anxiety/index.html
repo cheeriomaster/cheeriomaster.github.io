@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>高效有序，只是对死亡焦虑的防御</title>
+<style>
+:root{
+  --bg:#FBFBF9; --ink:#2B2B2B; --body:#525252; --gray:#77746F;
+  --faint:#A3A3A3; --line:#E8E6E1; --green:#4A5D52; --mark:#B5C8BC;
+  --hl:#D6E4DC;
+  --serif:'Songti SC','Noto Serif SC','Source Han Serif SC',serif;
+  --sans:-apple-system,'PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#141414;--ink:#EDEDED;--body:#D2D2D2;--gray:#9A9A9A;
+        --faint:#7A7A7A;--line:#2C2C2C;--green:#8FA898;--mark:#5E7268;
+        --hl:#2F3B34;}
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--body);font-family:var(--serif);
+     font-size:17px;line-height:2;letter-spacing:.2px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:720px;margin:0 auto;padding:60px 24px 96px}
+
+header{padding-bottom:34px}
+h1{font-size:clamp(19px,5.2vw,29px);line-height:1.5;color:var(--ink);
+   font-weight:700;letter-spacing:.5px;text-wrap:balance}
+.meta{font-family:var(--sans);font-size:12.5px;color:var(--faint);
+      letter-spacing:.6px;margin-top:14px}
+
+/* 封面 */
+figure.hero{margin:0 0 8px;border:1px solid var(--line)}
+figure.hero img{width:100%;display:block}
+figcaption{font-family:var(--sans);font-size:12px;color:var(--faint);
+           text-align:center;letter-spacing:.5px;margin-top:10px}
+
+/* 引言卡 */
+.epigraph{margin:44px 0 8px;padding:38px 20px;border-top:1px solid var(--line);
+          border-bottom:1px solid var(--line);text-align:center}
+.epigraph p{font-family:var(--serif);font-size:19px;font-weight:600;
+            color:var(--ink);line-height:1.85;letter-spacing:.8px}
+
+/* 目录 */
+.toc{padding-bottom:8px}
+.toc .label{font-family:var(--sans);font-size:11px;color:var(--faint);
+            letter-spacing:2px;text-transform:uppercase;margin:44px 0 18px}
+.toc .cols{display:flex;border-top:1px solid var(--line)}
+.toc .col{flex:1;padding:18px 12px 18px 0;border-bottom:1px solid var(--line);
+          border-right:1px solid var(--line);margin-right:16px}
+.toc .col:last-child{border-right:none;margin-right:0}
+.toc .n{font-family:var(--sans);font-size:11px;color:var(--green);
+        font-weight:600;letter-spacing:1px;margin-bottom:6px}
+.toc .t{font-size:13px;color:var(--ink);font-weight:500;line-height:1.5;
+        font-family:var(--sans)}
+
+/* 章节标题 */
+.chapter{margin-top:64px;padding-top:56px;border-top:1px solid var(--line)}
+.chapter .en{font-family:var(--sans);font-size:10px;color:var(--green);
+             font-weight:600;letter-spacing:4px;text-transform:uppercase;margin-bottom:10px}
+.chapter h2{font-family:var(--serif);font-size:22px;font-weight:700;color:var(--ink);
+            letter-spacing:.5px;line-height:1.4;margin-bottom:16px}
+.chapter .rule{width:40px;height:2px;background:var(--green);margin-bottom:6px}
+
+p.t{margin-top:26px;text-align:justify}
+p.t strong,p.t b{color:var(--ink);font-weight:700}
+mark{background:linear-gradient(180deg,transparent 60%,var(--hl) 60%);
+     color:var(--ink);font-weight:600}
+u,.mk{text-decoration:none;border-bottom:1.5px solid var(--mark);font-weight:500}
+
+/* 正文插图 */
+figure.pic{margin:36px 0 8px;border:1px solid var(--line)}
+figure.pic img{width:100%;display:block}
+
+/* 居中金句 */
+.pull{margin:44px 0;padding:36px 20px;border-top:1px solid var(--line);
+      border-bottom:1px solid var(--line);text-align:center}
+.pull p{font-family:var(--serif);font-size:17px;font-weight:600;color:var(--ink);
+        line-height:1.9;letter-spacing:.8px}
+
+/* 过往文章 */
+.past{margin-top:64px;padding-top:56px;border-top:1px solid var(--line)}
+.past .label{font-family:var(--sans);font-size:11px;color:var(--faint);
+            letter-spacing:2px;text-transform:uppercase;margin-bottom:20px}
+.past .row{display:block;padding:20px 0;border-bottom:1px solid var(--line);
+           text-decoration:none;color:inherit}
+.past .row:hover .h{color:var(--green)}
+.past .d{font-family:var(--sans);font-size:11px;color:var(--faint);letter-spacing:1px}
+.past .h{display:block;font-family:var(--serif);font-size:17px;font-weight:600;
+         color:var(--ink);line-height:1.6;margin-top:8px}
+.past .s{display:block;font-family:var(--sans);font-size:13.5px;color:var(--gray);
+         line-height:1.8;margin-top:4px}
+
+/* END */
+.end{display:flex;align-items:center;justify-content:center;margin:56px 0 0}
+.end span.l{height:1px;width:48px;background:var(--line)}
+.end span.txt{font-family:var(--sans);font-size:10px;color:var(--faint);
+              letter-spacing:4px;margin:0 16px}
+@media (max-width:520px){
+  body{font-size:16.5px;line-height:1.95}
+  .wrap{padding:44px 20px 80px}
+  .toc .t{font-size:12.5px}
+}
+</style></head>
+<body><div class="wrap">
+
+<header>
+  <h1>高效有序，只是对死亡焦虑的防御</h1>
+  <div class="meta">2026 年 6 月 4 日</div>
+</header>
+
+<figure class="hero">
+  <img src="img/cover-infinite-time.jpg" alt="空旷地平线上一个极小的人影">
+  <figcaption>— 无限的时间，与微小的人</figcaption>
+</figure>
+
+<section class="epigraph">
+  <p>其实这个题目不言而喻。</p>
+</section>
+
+<section class="toc">
+  <div class="label">本文脉络</div>
+  <div class="cols">
+    <div class="col"><div class="n">01</div><div class="t">如果生命是无限的</div></div>
+    <div class="col"><div class="n">02</div><div class="t">因为会死，才有轻重</div></div>
+    <div class="col"><div class="n">03</div><div class="t">高效只是一种感觉</div></div>
+  </div>
+</section>
+
+<section class="chapter">
+  <div class="en">01 · Chapter One</div>
+  <h2>如果生命是无限的</h2>
+  <div class="rule"></div>
+</section>
+
+<p class="t">设想我们有无限的生命：<span class="mk">细胞不会衰老，认知不会下降，人也不会死</span>。时间用不完，任何事都可以去做——那我们就可以花一百年、一万年，看一根草从种子里冒出来，再花十万年，看它长成一棵参天大树。</p>
+
+<p class="t">我们也不必去学 AI 技能、不必去学视频剪辑。不用着急去做工作，不用急着早上吃完饭、九点赶到公司打卡，打完卡下班再赶着练健身。读书、睡觉——所有这一切，我们都不必赶着做，<span class="mk">因为我们没有了死亡焦虑</span>。</p>
+
+<p class="t">我们只是活着、存在着。没有一件事需要我们着急，<span class="mk">因为生命是无限的</span>。</p>
+
+<p class="t">可真的去体会这种感觉，只会觉得无聊。<span class="mk">好像任何一件事都没有意义了</span>。</p>
+
+<figure class="pic">
+  <img src="img/seed-and-tree.jpg" alt="细墨线勾勒的参天大树与地面上的一粒种子">
+  <figcaption>— 一粒种子，与一棵参天大树</figcaption>
+</figure>
+
+<p class="t">时间一旦无限，世界就被摊平：<span class="mk">没有轻重缓急</span>，什么都可以等到想做的时候再做。所有事情都有无限的可能，一件事只要发生，就必然有结果。</p>
+
+<p class="t">哪怕我是世界上最笨、最蠢、最不会画画的人，我也总有无限的时间成为大师；哪怕我是世界上最无知、最文盲、最没有教养的人，我也能从野蛮人变成无所不知的大学者。<span class="mk">一切知识、一切技能，都失去了意义</span>——因为我们不会死。</p>
+
+<section class="chapter">
+  <div class="en">02 · Chapter Two</div>
+  <h2>因为会死，才有轻重</h2>
+  <div class="rule"></div>
+</section>
+
+<p class="t"><strong>但正因为我们会死，我们才需要在有限的时间里，<mark>挑出对生命重要的事，一件一件做完</mark>。</strong></p>
+
+<p class="t">比如现在这一段人生里，也许<span class="mk">恢复身体和家人陪伴是最重要的</span>，工作只是附加品；前一段人生里，满足欲望也许是最重要的，亲情友情反倒成了附加品。</p>
+
+<p class="t">此刻最重要的，也许就是把这段话说完、把这段文字记下来——因为<span class="mk">时间是我唯一拥有的货币</span>，我只能把它花在这里。</p>
+
+<figure class="pic">
+  <img src="img/hourglass-palm.jpg" alt="淡墨勾勒的沙漏与一只掌心向上的手">
+  <figcaption>— 时间是我唯一拥有的货币</figcaption>
+</figure>
+
+<section class="chapter">
+  <div class="en">03 · Chapter Three</div>
+  <h2>高效只是一种感觉</h2>
+  <div class="rule"></div>
+</section>
+
+<p class="t">也正因如此，我们想建立一种高效的生活方式，想把尽可能多的事，在最短的时间里做成。</p>
+
+<p class="t">可<span class="mk">所谓的高效，只是一种感觉</span>。很多时候你以为自己做了很多事，其实大多数事都是不必要的。结果和意义，是在安静里自己涌现出来的：安静地做一件正确的事，有当下的体会，那一刻的效率，<span class="mk">是所谓项目管理的十亿倍</span>。</p>
+
+<p class="t">然而为了减轻对死亡的焦虑，我们告诉自己：我在有限的时间里完成了很多事情——<span class="mk">用这个来逃避当下</span>。</p>
+
+<section class="pull">
+  <p>「在想高效的时候，恰恰背离了当下，也失去了效率的意义。」</p>
+</section>
+
+<figure class="pic">
+  <img src="img/sitting-lamp.jpg" alt="背对观者静坐的人与身旁的一盏小灯">
+  <figcaption>— 安静地做一件正确的事</figcaption>
+</figure>
+
+<section class="chapter">
+  <div class="en">∞ · Postscript</div>
+  <h2>不是逃避，是利用</h2>
+  <div class="rule"></div>
+</section>
+
+<p class="t">我们要做的<span class="mk">不是逃避这种焦虑，而是利用它</span>，帮我们更好地创造。</p>
+
+<div class="end">
+  <span class="l"></span><span class="txt">END</span><span class="l"></span>
+</div>
+
+<section class="past">
+  <div class="label">过往文章</div>
+  <div class="row">
+    <div class="d">2026-09-26</div>
+    <div class="h">我所害怕的死亡，并不是真的死亡</div>
+    <div class="s">死亡对于我来说，就是少收一本作业。</div>
+  </div>
+  <div class="row">
+    <div class="d">2026-10-06</div>
+    <div class="h">我在 35 岁才找到生命刚刚开始的样子</div>
+    <div class="s">重要的不是做什么，而是以什么方式存在。</div>
+  </div>
+  <div class="row">
+    <div class="d">2026-09-22</div>
+    <div class="h">我的超能力是孤独</div>
+    <div class="s">只有在看书的时候才会相信，原来我不是唯一的，也不是无助的。</div>
+  </div>
+  <div class="row">
+    <div class="d">2026-09-22</div>
+    <div class="h">钱会把一件事物的价值坍缩</div>
+    <div class="s">它被这样的标签限制住，而因此坍缩，实在是非常可惜。</div>
+  </div>
+</section>
+
+</div></body></html>

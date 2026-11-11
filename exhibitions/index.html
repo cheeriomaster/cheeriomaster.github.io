@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>待看展览 · 北京</title>
+<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<style>
+:root{--ink:#1A1A1A;--sub:#6B6B68;--muted:#9A9A96;--line:#ECECEA;--bg:#FAFAF8;
+--hot:#D0402C;--soon:#E07A28;--calm:#C4C4BE}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;background:var(--bg);color:var(--ink);
+-webkit-font-smoothing:antialiased}
+header{padding:36px 22px 0;max-width:920px;margin:0 auto}
+h1{font-size:21px;font-weight:700;letter-spacing:.5px}
+header p{color:var(--muted);font-size:12.5px;margin-top:8px;line-height:1.6}
+.wrap{max-width:920px;margin:0 auto;padding:18px 22px 60px}
+
+/* 顶部一行 */
+.dash{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 16px;font-size:13px;color:var(--sub)}
+.dash b{color:var(--ink);font-weight:600}
+.dash .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--soon);margin-right:7px;vertical-align:1.5px}
+
+/* 筛选：一行文字标签 */
+.filters{display:flex;flex-wrap:wrap;gap:0 4px;margin:14px 0 20px;border-bottom:1px solid var(--line)}
+.filters button{border:0;background:none;font:inherit;font-size:13px;color:var(--muted);cursor:pointer;
+padding:8px 11px;border-bottom:2px solid transparent;margin-bottom:-1px;transition:.12s}
+.filters button:hover{color:var(--ink)}
+.filters button.on{color:var(--ink);font-weight:600;border-bottom-color:var(--ink)}
+.filters button .c{font-size:11px;margin-left:4px;color:#C0C0BB}
+.filters button.on .c{color:var(--sub)}
+
+/* 卡片 */
+.grid{column-count:2;column-gap:12px}
+@media(max-width:720px){.grid{column-count:1}}
+.card{background:#fff;border:1px solid var(--line);border-left:3px solid var(--calm);border-radius:10px;
+padding:15px 16px 12px;position:relative;transition:.15s;cursor:pointer;
+break-inside:avoid;-webkit-column-break-inside:avoid;margin-bottom:12px;display:inline-block;width:100%}
+.card:hover{border-color:#E2E2DE;box-shadow:0 4px 14px rgba(0,0,0,.05)}
+.card.lv-last,.card.lv-urgent{border-left-color:var(--hot)}
+.card.lv-soon{border-left-color:var(--soon)}
+.card.ended{border-left-color:#E4E4E0;opacity:.5}
+.card.seen{opacity:.55}
+.card h3{font-size:15px;line-height:1.45;font-weight:600;letter-spacing:.2px}
+.card .num{font-size:11px;color:var(--muted);font-weight:600;margin-right:7px;letter-spacing:.5px}
+.fin{font-size:12.5px;font-weight:600;color:var(--sub);margin-top:6px}
+.fin.hot{color:var(--hot)}
+.fin.soon{color:var(--soon)}
+.meta{font-size:12.5px;color:var(--sub);line-height:1.8;margin-top:7px}
+.meta .when{color:var(--muted)}
+.tags{font-size:12px;color:var(--muted);margin-top:5px}
+.traffic{font-size:12px;color:var(--muted);margin-top:5px;letter-spacing:.2px}
+.note{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.7}
+.poster{display:inline-block;margin-top:11px;border-radius:6px;overflow:hidden;line-height:0;border:1px solid var(--line)}
+.poster img{display:block;width:92px;height:auto}
+.acts{display:flex;align-items:center;gap:12px;margin-top:12px;padding-top:11px;border-top:1px solid #F4F4F1}
+.navbtn{font-size:12.5px;font-weight:600;color:var(--ink);background:#F2F1ED;border-radius:7px;
+padding:6px 13px;text-decoration:none;cursor:pointer}
+.navbtn:hover{background:#EAE8E2}
+.seenbtn,.skipbtn{border:0;background:none;font:inherit;font-size:12.5px;color:var(--muted);cursor:pointer;padding:6px 0}
+.seenbtn{border:1px solid var(--line);background:#fff;border-radius:7px;padding:6px 12px;color:var(--ink);font-weight:600}
+.seenbtn:hover{background:#F7F7F4}
+.skipbtn{margin-left:auto}
+.skipbtn:hover{color:var(--ink)}
+.card.seen .seenbtn{background:#F7F7F4;border-color:#EAE8E2;color:var(--sub);font-weight:500}
+.card.skip .skipbtn{color:var(--sub)}
+.empty{color:var(--muted);font-size:13px;padding:20px 4px}
+
+/* 地图 */
+#map{height:440px;border-radius:12px;border:1px solid var(--line);margin-top:30px}
+@media(max-width:720px){#map{height:340px}}
+.mk{width:26px;height:26px;border-radius:50%;background:#8C8C86;color:#fff;font-weight:600;font-size:12px;
+display:flex;align-items:center;justify-content:center;border:2px solid #fff;box-shadow:0 1px 5px rgba(0,0,0,.25)}
+.mk.hot{background:var(--hot)}
+.mk.soon{background:var(--soon)}
+.mk.end{background:#CFCFC9}
+.mk.home{background:#1A1A1A}
+.leaflet-popup-content{font-size:12.5px;line-height:1.7}
+footer{text-align:center;color:var(--muted);font-size:11.5px;padding:26px 0 44px;line-height:1.9}
+.legend{font-size:11.5px;color:var(--muted);margin-top:8px;text-align:right}
+</style>
+</head>
+<body>
+<header>
+  <h1>待看展览 · 北京</h1>
+  <p>按「还剩几天」排序 · 点卡片可在地图上定位 · 交通时间为高德实测（从家出发）</p>
+</header>
+<div class="wrap">
+  <div class="dash" id="dash"></div>
+  <div class="filters" id="filters">
+    <button class="on" data-f="all">全部<span class="c"></span></button>
+    <button data-f="week">7 天内<span class="c"></span></button>
+    <button data-f="two">14 天内<span class="c"></span></button>
+    <button data-f="free">免费<span class="c"></span></button>
+    <button data-f="need">需预约<span class="c"></span></button>
+    <button data-f="seen">看过了<span class="c"></span></button>
+    <button data-f="skip" style="display:none">不看了<span class="c"></span></button>
+    <button data-f="ended">已结束<span class="c"></span></button>
+  </div>
+  <div class="grid" id="grid"></div>
+  <div id="map"></div>
+  <div class="legend">地图 · 红／橙＝7 天内结束 · 灰＝还早 · 黑＝家 · 已结束和「不看了」的不上图</div>
+</div>
+<footer id="foot"></footer>
+
+<script src="https://cdn.bootcdn.net/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+/* end 用 ISO 日期，页面每次打开自动算「还剩几天」，不用手动改 */
+const EVENTS=[
+{id:"dushu-1",t:"北京读书会 ·《人类群星闪耀时》丁轩",kind:"活动",start:"2026-09-26",end:"2026-09-26",due:"2026-09-26",dueLabel:"9月26日 当天",period:"9/26（周六）10:00–12:00",venue:"Epark（夕照寺社区）· 东城区夕照寺中街4号",transit:"81 分钟",bike:"54 分钟",taxi:"44 分钟",price:"未标价",tags:["need"],poster:"img/北京读书会-周末安排-缩略.jpg",posterFull:"img/北京读书会-周末安排.jpg",
+ note:"分享《人类群星闪耀时》· 嘉宾 丁轩：国家三级公共营养师、中国营养学会营养健康顾问 · 报名与咨询：小红书号 BJfenxiang",ll:[39.888954,116.441865]},
+{id:"dushu-2",t:"北京读书会 ·【公益】《领先的密码》佛洁",kind:"活动",start:"2026-09-26",end:"2026-09-26",due:"2026-09-26",dueLabel:"9月26日 当天",period:"9/26（周六）14:30–17:00",venue:"Epark（夕照寺社区）· 东城区夕照寺中街4号",transit:"81 分钟",bike:"54 分钟",taxi:"44 分钟",price:"公益场 · 免费",tags:["free","need"],poster:"img/北京读书会-周末安排-缩略.jpg",posterFull:"img/北京读书会-周末安排.jpg",
+ note:"【公益】作者光临《领先的密码》· 嘉宾 佛洁：万为瞻卓咨询合伙人，战略与组织专家，华为引入 BLM 业务领先模型的 IBM 原创团队成员 · 报名与咨询：小红书号 BJfenxiang",ll:[39.888954,116.441865]},
+{id:"dushu-3",t:"北京读书会 · 学术酒吧《浩劫之后》楼庭坚",kind:"活动",start:"2026-09-26",end:"2026-09-26",due:"2026-09-26",dueLabel:"9月26日 当天",period:"9/26（周六）19:00–21:00",venue:"THE BRICKS 爵士俱乐部 · 东城区新东路8号首开铂郡北区北侧内广场地下一层007号",transit:"54 分钟",bike:"34 分钟",taxi:"36 分钟",price:"未标价",tags:["need"],poster:"img/北京读书会-周末安排-缩略.jpg",posterFull:"img/北京读书会-周末安排.jpg",
+ note:"主题：浩劫之后，液态现代性下的过程伦理与反目的论叙事——关于情感如何在不确定时代安放的哲学方案 · 嘉宾 楼庭坚：哲学博士、助理研究员，清华大学人文学院 · 报名与咨询：小红书号 BJfenxiang",ll:[39.939225,116.451111]},
+{id:"dushu-4",t:"北京读书会 ·《中午吃什么》鹿鸣",kind:"活动",start:"2026-09-27",end:"2026-09-27",due:"2026-09-27",dueLabel:"9月27日 当天",period:"9/27（周日）10:00–12:00",venue:"Epark（夕照寺社区）· 东城区夕照寺中街4号",transit:"81 分钟",bike:"54 分钟",taxi:"44 分钟",price:"未标价",tags:["need"],poster:"img/北京读书会-周末安排-缩略.jpg",posterFull:"img/北京读书会-周末安排.jpg",
+ note:"分享《中午吃什么》· 嘉宾 鹿鸣：头部媒体财经内容主编，15 年从业经历，专注金融、科技行业，以经济视角看待世间万象 · 报名与咨询：小红书号 BJfenxiang",ll:[39.888954,116.441865]},
+{id:"dushu-5",t:"北京读书会 ·《九型人格》韩晶",kind:"活动",start:"2026-09-27",end:"2026-09-27",due:"2026-09-27",dueLabel:"9月27日 当天",period:"9/27（周日）14:30–17:00",venue:"Epark（夕照寺社区）· 东城区夕照寺中街4号",transit:"81 分钟",bike:"54 分钟",taxi:"44 分钟",price:"未标价",tags:["need"],poster:"img/北京读书会-周末安排-缩略.jpg",posterFull:"img/北京读书会-周末安排.jpg",
+ note:"分享《九型人格》· 嘉宾 韩晶：澳大利亚新南威尔士大学硕士，塔罗潜意识咨询师 4 年、亲密关系导师及讲师 3 年、NLP 身心灵成长执行师 3 年 · 报名与咨询：小红书号 BJfenxiang",ll:[39.888954,116.441865]},
+{id:"xinqiao",t:"新桥市集 · 手工与创意市集",kind:"活动",start:"2026-09-23",end:"2026-09-27",due:"2026-09-27",dueLabel:"9月27日 结束",period:"9/23 – 9/27",venue:"恒通国际创新园 · C7 光合聚场（朝阳区酒仙桥北路9号）",transit:"70 分钟",bike:"26 分钟",taxi:"23 分钟",price:"门票 5 元",tags:[],poster:"img/新桥市集-手工与创意市集-缩略.jpg",posterFull:"img/新桥市集-手工与创意市集.jpg",
+ note:"402 个摊位：手工／创意／文创／旧物，74% 摊主来自北京之外，39% 摊主第一次参加 · 时间：9/23、9/24（周三、周四）14:30–21:30；9/25–9/27（周五、周六、周日）12:00–21:00 · 主办：UCP 恒通国际创新园 · 小红书号 wuyuemum",ll:[39.989839,116.494007]},
+{id:"ditan",t:"地坛书市 · 我与地坛·2026北京书市",start:"2026-09-17",end:"2026-09-27",period:"9/17 – 9/27",venue:"地坛公园 · 东城区",transit:"46 分钟",bike:"18 分钟",taxi:"21 分钟",price:"免费",tags:["free"],
+ note:"400+参展商、500+展位、60万种书；惠民券每天 9:00 在「BOOK万物」领 · 外文原版区在 H 区（近西门）",ll:[39.953777,116.414443]},
+{id:"cafa-wujing",t:"无经 · 王希民／张汉普／吕明岳",start:"2026-09-16",end:"2026-10-25",period:"9/16 – 10/25",venue:"中央美术学院美术馆 3层C展厅 · 朝阳区花家地",transit:"32 分钟",bike:"19 分钟",taxi:"12 分钟",price:"待确认",tags:["need"],
+ note:"中央美术学院青年教师种子支持计划 · 学术主持 吕品晶／唐晖 · 策展人 张倩媛 · 支持：壁画系",ll:[39.984540,116.465225]},
+{id:"tang-ka",t:"万德庄严——世界非遗·尼泊尔唐卡精品展",start:"",end:"2026-09-24",period:"至 9/24（周一闭馆）9:00–17:00",venue:"北京光中书院·光中文教馆 · 通州区",transit:"104 分钟",bike:"73 分钟",taxi:"57 分钟",price:"免费 · 无需预约",tags:["free"],
+ note:"纽瓦丽画派，青金石朱砂绿松石纯金矿物颜料手绘 · 时轮金刚坛城、度母系列 · 较远（通州）",ll:[39.943364,116.637888]},
+{id:"qatar",t:"行·迹——卡塔尔游牧生活与文化展",start:"",end:"2026-10-11",period:"至 10/11（周一闭馆）",venue:"中国国家博物馆 南3展厅 · 东城区",transit:"71 分钟",bike:"40 分钟",taxi:"63 分钟",price:"免费 · 实名预约",tags:["free","need"],
+ note:"约150件/组实物摄影影像，国内首次系统呈现卡塔尔游牧生活 · 国博小程序每天17:00放票",ll:[39.905374,116.401304]},
+{id:"hanzi",t:"了不起的汉字——古文字与中华文明传承发展工程成果展",start:"",end:"2026-10-16",period:"至 10/16",venue:"中国国家博物馆 北N2展厅 · 东城区",transit:"71 分钟",bike:"40 分钟",taxi:"63 分钟",price:"免费 · 预约",tags:["free","need"],
+ note:"270余件（套）文物：甲骨、金文、简帛、玺印、钱币，六大单元",ll:[39.905374,116.401304]},
+{id:"maya",t:"玉米·黄金·美洲豹——玛雅与安第斯古代文明大展",start:"",end:"2026-10-18",period:"至 10/18",venue:"首都博物馆 · 西城区",transit:"70 分钟",bike:"49 分钟",taxi:"53 分钟",price:"98元起",tags:["paid"],
+ note:"墨西哥秘鲁20余家机构约800件文物，80%首次来华 · 三大展厅",ll:[39.906412,116.342067]},
+{id:"fengzi",t:"知画是心：丰子恺《护生画集》艺术研究展",start:"",end:"2026-10-20",period:"至 10/20",venue:"中国国家画院 · 海淀区",transit:"71 分钟",bike:"49 分钟",taxi:"36 分钟",price:"免费（票价截图未标）",tags:["free"],
+ note:"「护生」护心 / 别裁 / 文脉 三大板块，跨越半个世纪",ll:[39.938224,116.311423]},
+{id:"dianze",t:"典则 · 唐宋书画展",start:"2026-09-01",end:"2026-11-01",period:"9/1 – 11/1（周一闭馆）9:00–17:00",venue:"故宫博物院 · 东城区景山前街4号",transit:"99 分钟",bike:"49 分钟",taxi:"56 分钟",price:"免费 · 需预约",tags:["free","need"],
+ note:"中国古代书法、绘画及碑帖类文物 107 件：东晋顾恺之《洛神赋图》卷（宋摹本）、隋展子虔《游春图》卷、唐阎立本《步辇图》卷、唐杜牧《行书张好好诗》卷、五代董源《潇湘图》卷、宋蔡襄《行书自书诗》卷等 · 展名出自「从师约法曰典，可以传授曰则」",ll:[39.917839,116.397029]},
+{id:"mobi-gu",t:"摹壁寻古 丹青致远 · 广胜寺《药师佛佛会图》及中国古代壁画临摹展",start:"2026-09-24",end:"2026-11-15",period:"9/24 – 11/15（周一闭馆）9:00–17:00",venue:"中国工美馆·中国非遗馆（中国工艺美术馆） · 朝阳区湖景东路16号",transit:"32 分钟",bike:"15 分钟",taxi:"13 分钟",price:"免费 · 需预约",tags:["free","need"],
+ note:"以中国艺术研究院「美国大都会艺术博物馆藏《药师佛佛会图》研究临摹」项目为核心，围绕「研究性临摹」方法，结合图像复原、文献互证、历史考证与图像学阐释，梳理出一套完整的壁画临摹与研究路径 · 主办：中国艺术研究院",ll:[40.003726,116.397580]},
+{id:"mayi",t:"走进蚂蚁的微观世界",kind:"活动",start:"2026-10-19",end:"2026-10-19",due:"2026-10-19",dueLabel:"10月19日 当天",period:"10/19",venue:"北京法国文化中心 · 朝阳区工人体育场西路18号",transit:"59 分钟",bike:"37 分钟",taxi:"37 分钟",price:"免费",tags:["free"],
+ note:"沉浸式体验法式风情～图书市集、文创市集，体验《蚂蚁帝国》",ll:[39.927263,116.444313]},
+{id:"speech",t:"立即应用演讲背后的故事",kind:"活动",start:"2026-10-27",end:"2027-01-19",period:"10/27 – 2027/1/19",venue:"北京美国中心（美国大使馆内） · 朝阳区安家楼路55号",transit:"58 分钟",bike:"31 分钟",taxi:"23 分钟",price:"需报名",tags:["need"],
+ note:"为期三个月的英语演讲工作坊，提升您的英语公开演讲能力 · 英文海报：The Story Behind the Speech — Improve your English public speaking in this three-month workshop · Apply by September 30, 2026（报名截止日已过）",ll:[39.954463,116.467352]},
+{id:"franprix",t:"畅飨法兰西 · 法国美食美酒嘉年华",kind:"活动",start:"2026-10-24",end:"2026-10-26",period:"10/24 – 10/26（11:00–20:00）",venue:"北京保利广场 · 朝阳区香宾路66号（来广营）",transit:"34 分钟",bike:"23 分钟",taxi:"20 分钟",price:"免费",tags:["free"],
+ note:"法国美食美酒主题活动",ll:[40.016710,116.464789]},
+{id:"another-perception",t:"另一种感知：时间形态、他者言语、数字痕迹",start:"2026-07-28",end:"2027-01-03",period:"2026.7.28 – 2027.1.3",venue:"清华大学校内 · 海淀区双清路30号",transit:"61 分钟",bike:"40 分钟",taxi:"33 分钟",price:"50 元",tags:["paid"],
+ note:"三个篇章，分别指向三种需要我们重新浸入的感知维度",ll:[40.003213,116.326936]},
+{id:"huacai",t:"华彩：中国古代织绣艺术特展",start:"2026-07-29",end:"2026-09-19",period:"2026.7.29 – 9.19",venue:"TVCC 电视文化中心（朝阳区东三环中路32号）",transit:"59 分钟",bike:"47 分钟",taxi:"31 分钟",price:"截图未标",tags:[],
+ note:"宫廷服饰、文人绣品、荷包香囊、马面裙、缂丝挂屏、云肩 · 截图只写「TVCC」，按央视电视文化中心定位",ll:[39.916493,116.462292]},
+{id:"sanwu",t:"大学生AI艺术展（三山五园）",start:"2026-09-20",end:"2026-09-20",period:"9/20（周日）14:00–18:00",venue:"海淀三山五园文化艺术中心 · 海淀区",transit:"74 分钟",bike:"40 分钟",taxi:"28 分钟",price:"待确认",tags:["need"],
+ note:"单日活动，已过",ll:[39.988604,116.293047]},
+{id:"today-art",t:"第三届全国大学生美术作品展分会场（今日美术馆三连展）",start:"",end:"2026-09-13",period:"至 9/13",venue:"今日美术馆 · 朝阳区",transit:"75 分钟",bike:"40 分钟",taxi:"50 分钟",price:"40元",tags:["paid"],
+ note:"装置影像动画交互算法",ll:[39.900089,116.467689]},
+{id:"shuangshou",t:"双手做工市集 · 十月·劳动者的花园",kind:"活动",start:"2026-10-15",end:"2026-10-18",due:"2026-10-18",dueLabel:"10月18日 结束",period:"10/15（周四）– 10/18（周日）11:00–20:00",venue:"首创郎园Station 中央车站 · 朝阳区半截塔路53号（东坝）",transit:"70 分钟",bike:"58 分钟",taxi:"31 分钟",price:"未标价",tags:[],poster:"img/双手做工市集-劳动者的花园-缩略.jpg",posterFull:"img/双手做工市集-劳动者的花园.jpg",
+ note:"手工艺市集：陶艺、木作、织造、食物、艺术、自然实践；联合 Well Well Lab（良好生活实验室）· 现场有开放麦舞台、手作体验、音乐演出 · 木墨家具／木墨生活、溪边陶瓷工作室、作光、新造、子粒咖啡、有食料理都在场",ll:[39.968425,116.516225]},
+{id:"shaitaiyang",t:"《晒太阳》新书分享会 · 依子阿依莫",kind:"活动",start:"2026-10-18",end:"2026-10-18",due:"2026-10-18",dueLabel:"10月18日 当天",period:"10/18（周日）15:00–17:00",venue:"郎园Station 中央车站 · 劳动舞台（朝阳区半截塔路53号）",transit:"70 分钟",bike:"58 分钟",taxi:"31 分钟",price:"未标价",tags:[],poster:"img/晒太阳新书分享会-缩略.jpg",posterFull:"img/晒太阳新书分享会.jpg",
+ note:"主持 小飞 · 嘉宾 依子阿依莫：大凉山彝族女孩，没学过画画也没学过写诗，只是在大地上长着、感受着、经历着、玩耍着——《晒太阳》作者 · 木墨 × 双手做工 市集现场",ll:[39.968425,116.516225]}
+];
+const HOME=[39.994156,116.429890];
+const SEEN_KEY="bj_exhib_seen_v1";
+const SKIP_KEY="bj_exhib_skip_v1";  /* 不看了：整张卡片从列表里消失，地图上也不再打点 */
+
+/* ---------- 时间与紧迫度 ---------- */
+function dueOf(e){ return e.due||e.end; }
+function dLeft(endISO){
+  const a=new Date(endISO+"T00:00:00");
+  const b=new Date(); b.setHours(0,0,0,0);
+  return Math.round((a-b)/86400000);
+}
+function lv(d){
+  if(d<0) return "ended";
+  if(d===0) return "last";
+  if(d<=3) return "urgent";
+  if(d<=7) return "soon";
+  if(d<=14) return "mid";
+  return "calm";
+}
+const LVNAME={last:"今天最后一天",urgent:"urgent",soon:"soon",mid:"mid",calm:"calm"};
+function badgeText(d){
+  if(d<0) return "已结束";
+  if(d===0) return "今天最后一天";
+  return "还剩 "+d+" 天";
+}
+function fmtDate(iso){
+  const p=iso.split("-");
+  return Number(p[1])+"月"+Number(p[2])+"日";
+}
+function getSeen(){ try{return JSON.parse(localStorage.getItem(SEEN_KEY)||"[]")}catch(e){return []} }
+function setSeen(a){ try{localStorage.setItem(SEEN_KEY,JSON.stringify(a))}catch(e){} }
+function getSkip(){ try{return JSON.parse(localStorage.getItem(SKIP_KEY)||"[]")}catch(e){return []} }
+function setSkip(a){ try{localStorage.setItem(SKIP_KEY,JSON.stringify(a))}catch(e){} }
+
+/* ---------- 排序：未看过的按结束日升序 → 看过的 → 已结束 ---------- */
+function sorted(){
+  const seen=getSeen(), skip=getSkip();
+  return EVENTS.map(e=>({e:e,d:dLeft(dueOf(e)),seen:seen.indexOf(e.id)>=0,skip:skip.indexOf(e.id)>=0}))
+    .sort((a,b)=>{
+      const ga=a.d<0?2:(a.seen?1:0), gb=b.d<0?2:(b.seen?1:0);
+      if(ga!==gb) return ga-gb;
+      if(ga===2) return b.d-a.d;
+      return a.d-b.d;
+    });
+}
+
+/* ---------- 顶部面板 ---------- */
+function renderDash(){
+  const now=new Date();
+  const wd=["周日","周一","周二","周三","周四","周五","周六"][now.getDay()];
+  const rows=sorted().filter(x=>x.d>=0&&!x.skip);
+  const next=rows[0];
+  let html='<div class="today">今天 <b>'+(now.getMonth()+1)+' 月 '+now.getDate()+' 日 '+wd+'</b> · 可看 <b>'+rows.length+'</b> 场</div>';
+  if(next){
+    html+='<div class="nextup"><span class="dot"></span>最该先去 <b>'+next.e.t.split(" · ")[0]+'</b>（'+badgeText(next.d)+'）</div>';
+  }
+  document.getElementById("dash").innerHTML=html;
+}
+
+function updateFilters(){
+  const a=sorted();
+  const live=function(x){return !x.skip};
+  const c={
+    all:a.filter(x=>x.d>=0&&!x.seen&&live(x)).length,
+    week:a.filter(x=>x.d>=0&&!x.seen&&live(x)&&x.d<=7).length,
+    two:a.filter(x=>x.d>=0&&!x.seen&&live(x)&&x.d<=14).length,
+    free:a.filter(x=>x.d>=0&&!x.seen&&live(x)&&x.e.tags.indexOf("free")>=0).length,
+    need:a.filter(x=>x.d>=0&&!x.seen&&live(x)&&x.e.tags.indexOf("need")>=0).length,
+    seen:a.filter(x=>x.seen&&live(x)).length,
+    skip:a.filter(x=>x.skip).length,
+    ended:a.filter(x=>x.d<0&&live(x)).length
+  };
+  document.querySelectorAll("#filters button").forEach(function(b){
+    const sp=b.querySelector(".c"); if(sp) sp.textContent=c[b.dataset.f]||0;
+    if(b.dataset.f==="skip") b.style.display=c.skip?"":"none";   /* 一场都没跳过就不显示这个页签 */
+  });
+}
+
+/* ---------- 卡片 ---------- */
+let filter="all";
+function visible(x){
+  if(filter==="all") return x.d>=0 && !x.seen && !x.skip;
+  if(filter==="week") return x.d>=0 && !x.seen && !x.skip && x.d<=7;
+  if(filter==="two") return x.d>=0 && !x.seen && !x.skip && x.d<=14;
+  if(filter==="free") return x.d>=0 && !x.seen && !x.skip && x.e.tags.indexOf("free")>=0;
+  if(filter==="need") return x.d>=0 && !x.seen && !x.skip && x.e.tags.indexOf("need")>=0;
+  if(filter==="seen") return x.seen && !x.skip;
+  if(filter==="skip") return x.skip;
+  if(filter==="ended") return x.d<0 && !x.skip;
+  return true;
+}
+function amapWeb(lng,lat,name,mode){
+  return "https://uri.amap.com/navigation?to="+lng+","+lat+","+encodeURIComponent(name)
+    +"&mode="+(mode||"car")+"&policy=1&src=yanghuidong&coordinate=gaode&callnative=1";
+}
+function navName(e){ return (e.venue.split(" · ")[0]||e.t.split(" · ")[0]); }
+function navBtn(e){
+  const n=navName(e);
+  return '<a class="navbtn" href="'+amapWeb(e.ll[1],e.ll[0],n)+'" data-lng="'+e.ll[1]+'" data-lat="'+e.ll[0]+
+    '" data-name="'+n.replace(/"/g,"&quot;")+'" target="_blank" rel="noopener">🧭 高德导航</a>';
+}
+function openAmapApp(lng,lat,name){
+  const ua=navigator.userAgent.toLowerCase();
+  const isIOS=/iphone|ipad|ipod/.test(ua);
+  const q="dlat="+lat+"&dlon="+lng+"&dname="+encodeURIComponent(name)+"&dev=0&t=0";
+  const scheme=isIOS ? "iosamap://path?sourceApplication=yanghuidong&"+q
+                     : "amapuri://route/plan/?sourceApplication=yanghuidong&"+q;
+  const t0=Date.now();
+  window.location.href=scheme;
+  setTimeout(function(){ if(!document.hidden && Date.now()-t0<2000) window.location.href=amapWeb(lng,lat,name); },1200);
+}
+let posterOwner={};
+function cardHtml(x,i){
+  const e=x.e, l=lv(x.d);
+  const u=(x.d>=0&&x.d<=3)?" hot":((x.d>=0&&x.d<=7)?" soon":"");
+  const price=[e.price];
+  if(e.tags.indexOf("need")>=0 && e.price.indexOf("预约")<0) price.push("需预约");
+  if(e.kind) price.push(e.kind);
+  const fin=x.d<0?"已结束":(x.d===0?"今天最后一天":badgeText(x.d)+" · "+(e.dueLabel||fmtDate(e.end)+" 结束"));
+  return '<div class="card lv-'+l+(x.d<0?' ended':'')+(x.seen?' seen':'')+(x.skip?' skip':'')+'" data-id="'+e.id+'" data-i="'+i+'">'
+    +'<h3>'+(x.d<0||x.seen||x.skip?'':'<span class="num">'+(i+1)+'</span>')+e.t+'</h3>'
+    +'<div class="fin'+u+'">'+fin+'</div>'
+    +'<div class="meta"><span class="when">'+e.period+'</span><br>📍 '+e.venue+'</div>'
+    +'<div class="tags">💰 '+price.join(" · ")+'</div>'
+    +'<div class="traffic">🚇 '+e.transit+' ｜ 🚲 '+e.bike+' ｜ 🚕 '+e.taxi+'</div>'
+    +'<div class="note">'+e.note+'</div>'
+    +((e.poster&&posterOwner[e.poster]===e.id)?'<a class="poster" href="'+(e.posterFull||e.poster)+'" target="_blank" rel="noopener"><img src="'+e.poster+'" alt="活动海报" loading="lazy"></a>':'')
+    +'<div class="acts">'
+      +'<button class="seenbtn">'+(x.seen?"✓ 看过了":"标记看过")+'</button>'
+      +(x.d<0||x.skip?'':navBtn(e))
+      +'<button class="skipbtn">'+(x.skip?"← 放回列表":"不看了")+'</button></div>'
+    +'</div>';
+}
+function render(){
+  const all=sorted();
+  posterOwner={};
+  all.forEach(function(x){ const p=x.e.poster; if(p && !(p in posterOwner)) posterOwner[p]=x.e.id; });
+  const live=all.filter(function(x){return !x.skip});        /* 「不看了」不占号，编号始终连着 */
+  const idx={}; live.forEach(function(x,i){idx[x.e.id]=i});
+  const list=all.filter(visible);
+  const g=document.getElementById("grid");
+  if(!list.length){ g.innerHTML='<div class="empty">这一类里暂时没有可看的内容。</div>'; }
+  else{ g.innerHTML=list.map(function(x){return cardHtml(x,idx[x.e.id])}).join(""); }
+  renderDash();
+  updateFilters();
+  const skipN=all.filter(function(x){return x.skip}).length;
+  syncMap();
+  const foot=document.getElementById("foot");
+  const act=all.filter(function(x){return x.d>=0&&!x.skip}).length;
+  const end=all.filter(function(x){return x.d<0&&!x.skip}).length;
+  foot.innerHTML="共 "+EVENTS.length+" 场 · 可看 "+act+" 场 · 已结束 "+end+" 场"+(skipN?" · 不看了 "+skipN+" 场":"")
+    +"<br>数据来自小红书截图／活动海报提取，出行前请以官方渠道为准";
+}
+
+document.getElementById("filters").addEventListener("click",function(ev){
+  const b=ev.target.closest("button[data-f]"); if(!b) return;
+  document.querySelectorAll(".filters button").forEach(function(x){x.classList.remove("on")});
+  b.classList.add("on"); filter=b.dataset.f; render();
+});
+
+/* ---------- 地图 ---------- */
+const map=L.map("map").setView([39.95,116.38],11);
+L.tileLayer("https://webrd04.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}",{maxZoom:18,attribution:"© 高德地图"}).addTo(map);
+const markers={};
+function onMap(e){
+  return dLeft(dueOf(e))>=0 && getSkip().indexOf(e.id)<0;   /* 已结束的和「不看了」的一律不上图 */
+}
+function makeMarker(e){
+  const d=dLeft(dueOf(e));
+  const icon=L.divIcon({className:"",html:'<div class="mk'+(d<=3?" hot":(d<=7?" soon":"")) +'">'+(e.kind?e.kind.charAt(0):(e.t.indexOf("书市")>=0?"书":"展"))+'</div>',iconSize:[26,26],iconAnchor:[13,13]});
+  return L.marker(e.ll,{icon:icon})
+    .bindPopup("<b>"+e.t+"</b><br>🗓 "+e.period+"<br><span style='color:#e64a19'>"+badgeText(d)+"</span><br>📍 "+e.venue+"<br>💰 "+e.price
+      +'<br><a href="'+amapWeb(e.ll[1],e.ll[0],navName(e))+'" target="_blank" rel="noopener">🧭 高德导航</a>');
+}
+function syncMap(){
+  EVENTS.forEach(function(e){
+    const want=onMap(e), have=markers[e.id];
+    if(want&&!have) markers[e.id]=makeMarker(e).addTo(map);
+    else if(!want&&have){ map.removeLayer(have); delete markers[e.id]; }
+  });
+}
+syncMap();
+L.marker(HOME,{icon:L.divIcon({className:"",html:'<div class="mk home">★</div>',iconSize:[26,26],iconAnchor:[13,13]})}).addTo(map).bindPopup("家 · 世纪村三区");
+
+document.getElementById("grid").addEventListener("click",function(ev){
+  const nb=ev.target.closest(".navbtn");
+  if(nb){ ev.preventDefault(); ev.stopPropagation(); openAmapApp(nb.dataset.lng,nb.dataset.lat,nb.dataset.name); return; }
+  const c=ev.target.closest(".card"); if(!c) return;
+  const id=c.dataset.id;
+  if(ev.target.classList.contains("seenbtn")){
+    const seen=getSeen(); const k=seen.indexOf(id);
+    if(k>=0) seen.splice(k,1); else seen.push(id);
+    setSeen(seen); render(); return;
+  }
+  if(ev.target.classList.contains("skipbtn")){
+    const skip=getSkip(); const k=skip.indexOf(id);
+    if(k>=0) skip.splice(k,1);
+    else{
+      skip.push(id);
+      const seen=getSeen(); const j=seen.indexOf(id);   /* 跳过的不算看过了 */
+      if(j>=0){ seen.splice(j,1); setSeen(seen); }
+    }
+    setSkip(skip);
+    if(filter==="skip"&&!skip.length){   /* 都放回完了就回到「全部」 */
+      filter="all";
+      document.querySelectorAll(".filters button").forEach(function(x){x.classList.toggle("on",x.dataset.f==="all")});
+    }
+    render(); return;
+  }
+  const m=markers[id]; if(!m) return;
+  document.getElementById("map").scrollIntoView({behavior:"smooth",block:"center"});
+  setTimeout(function(){ map.invalidateSize(); map.setView(m.getLatLng(),14,{animate:true}); m.openPopup(); },450);
+});
+
+render();
+</script>
+</body>
+</html>

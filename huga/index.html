@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="胡嘎游戏">
+<meta name="theme-color" content="#faf7f2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#14120f" media="(prefers-color-scheme: dark)">
+<title>胡嘎游戏</title>
+<style>
+  :root{
+    --bg:#f4efe7; --tile:#fffdfa; --ink:#26221e; --muted:#8a8178;
+    --line:rgba(38,34,30,.10); --line-soft:rgba(38,34,30,.07); --accent:#b3452c;
+    --glow:rgba(179,69,44,.10); --grain:.045;
+    --shadow:0 1px 2px rgba(38,34,30,.05),0 10px 28px rgba(38,34,30,.055);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#100e0c; --tile:#1b1815; --ink:#ede7df; --muted:#8b8178;
+      --line:rgba(237,231,223,.13); --line-soft:rgba(237,231,223,.08); --accent:#d98a5c;
+      --glow:rgba(217,138,92,.12); --grain:.06; --shadow:none;
+    }
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{
+    margin:0; color:var(--ink);
+    font-family:"Songti SC","Noto Serif SC",serif;
+    -webkit-font-smoothing:antialiased; line-height:1.6;
+    background:var(--bg);
+  }
+  /* 纸面颗粒 */
+  body::after{
+    content:""; position:fixed; inset:0; pointer-events:none; z-index:2;
+    opacity:var(--grain); mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  @media (prefers-color-scheme: dark){ body::after{mix-blend-mode:soft-light} }
+
+  .screen{
+    position:relative; z-index:1;
+    min-height:100dvh; max-width:720px; margin:0 auto;
+    padding:calc(env(safe-area-inset-top) + 30px) 26px calc(env(safe-area-inset-bottom) + 26px);
+    display:flex; flex-direction:column;
+  }
+  .hidden{display:none}
+
+  /* ================= 首页 ================= */
+  #intro{
+    justify-content:center; text-align:center; gap:30px;
+    background:
+      radial-gradient(120% 62% at 50% 0%, var(--glow), rgba(0,0,0,0) 62%),
+      var(--bg);
+  }
+  /* 一叠牌：背面两张 ＋ 正面写着名字的一张 */
+  .deck{position:relative; width:100%; max-width:340px; height:134px; margin:0 auto}
+  .sheet{
+    position:absolute; inset:0; border-radius:18px;
+    background:var(--tile); border:1px solid var(--line-soft);
+  }
+  .sheet.b1{opacity:.62; animation:lay1 .5s .05s ease both}
+  .sheet.b2{opacity:.85; animation:lay2 .5s .14s ease both}
+  .sheet.face{
+    border-color:var(--line); box-shadow:var(--shadow);
+    display:flex; align-items:center; justify-content:center;
+    animation:face .55s .22s cubic-bezier(.2,.75,.3,1) both;
+  }
+  #intro h1{font-size:31px; letter-spacing:.2em; text-indent:.2em; margin:0; font-weight:600}
+  @keyframes lay1{from{opacity:0; transform:translate(0,0) rotate(0deg)}to{opacity:.62; transform:translate(-10px,-12px) rotate(-3.2deg)}}
+  @keyframes lay2{from{opacity:0; transform:translate(0,0) rotate(0deg)}to{opacity:.85; transform:translate(10px,12px) rotate(2.6deg)}}
+  @keyframes face{from{opacity:0; transform:translateY(14px) scale(.97)}to{opacity:1; transform:none}}
+
+  #intro .copy{
+    margin:0 auto; max-width:26em; font-size:16px; line-height:2.06; letter-spacing:.01em;
+    text-align:justify; text-justify:inter-ideograph;
+    animation:soft .9s .42s ease both;
+  }
+  #intro .copy p{margin:0 0 1.1em}
+  #intro .copy p:last-child{margin-bottom:0}
+  #intro .cta{display:flex; justify-content:center; margin-top:6px; animation:soft .9s .58s ease both}
+  @keyframes soft{from{opacity:0; transform:translateY(10px)}to{opacity:1; transform:none}}
+
+  /* ================= 按钮 ================= */
+  button{font-family:inherit; font-size:16px; cursor:pointer; border-radius:999px; border:1px solid transparent}
+  .primary{background:var(--accent); color:#fff; padding:14px 42px; letter-spacing:.12em; box-shadow:var(--shadow)}
+  .primary:active{transform:translateY(1px)}
+  .ghost{background:transparent; color:var(--muted); border-color:var(--line); padding:11px 22px; font-size:14px}
+
+  /* ================= 卡片页：背景上放一张几乎满屏的牌 ================= */
+  #play{
+    background:var(--bg);
+    padding-top:calc(env(safe-area-inset-top) + 18px);
+    padding-bottom:calc(env(safe-area-inset-bottom) + 18px);
+    padding-left:14px; padding-right:14px;
+  }
+  .cardFrame{
+    flex:1; display:flex; flex-direction:column;
+    background:var(--tile); border:1px solid var(--line); border-radius:24px;
+    box-shadow:var(--shadow);
+    padding:34px 28px; position:relative; overflow:hidden;
+  }
+  /* 牌面内圈一道更淡的细线，像牌边 */
+  .cardFrame::after{
+    content:""; position:absolute; inset:9px; border-radius:16px;
+    border:1px solid var(--line-soft); pointer-events:none;
+  }
+  .cardBody{flex:1; display:flex; align-items:center}
+  .rows{position:relative; width:100%; padding-left:26px}
+  /* 左侧一条细线 ＋ 三个节点：一句接一句往下走 */
+  .rows::before{
+    content:""; position:absolute; left:3.5px; top:12px; bottom:12px; width:1px;
+    background:var(--line); transform-origin:top; animation:grow 1.05s .1s ease both;
+  }
+  .row{position:relative; margin:0 0 30px}
+  .row:last-child{margin-bottom:0}
+  .row::before{
+    content:""; position:absolute; left:-26px; top:.62em; width:8px; height:8px; border-radius:50%;
+    background:var(--tile); border:1px solid var(--line); animation:node .5s ease both;
+  }
+  .row::after{
+    content:""; position:absolute; left:-26px; top:.62em; width:8px; height:8px; border-radius:50%;
+    background:var(--accent); opacity:0; animation:fill .5s ease both;
+  }
+  .row p{margin:0; font-size:21px; line-height:1.72; text-wrap:pretty; line-break:strict; animation:qin .52s ease both}
+  .row:nth-child(1)::before,.row:nth-child(1)::after{animation-delay:.12s}
+  .row:nth-child(2)::before,.row:nth-child(2)::after{animation-delay:.54s}
+  .row:nth-child(3)::before,.row:nth-child(3)::after{animation-delay:.96s}
+  .row:nth-child(1) p{animation-delay:.18s}
+  .row:nth-child(2) p{animation-delay:.60s}
+  .row:nth-child(3) p{animation-delay:1.02s}
+  @keyframes grow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+  @keyframes node{from{opacity:0}to{opacity:1}}
+  @keyframes fill{from{opacity:0; transform:scale(.4)}to{opacity:1; transform:scale(1)}}
+  @keyframes qin{from{opacity:0; transform:translateY(9px)}to{opacity:1; transform:none}}
+  .playFoot{
+    display:flex; justify-content:center; align-items:center; gap:14px;
+    padding:20px 10px 0;
+  }
+
+  /* ================= 结束 ================= */
+  #end{
+    background:var(--tile); justify-content:center; text-align:center; gap:34px;
+  }
+  #end h2{font-size:26px; font-weight:600; margin:0; letter-spacing:.08em; animation:soft .8s ease both}
+  #end .cta{display:flex; justify-content:center; animation:soft .9s .12s ease both}
+</style>
+</head>
+<body>
+<main>
+  <!-- 首页 -->
+  <section id="intro" class="screen">
+    <div class="deck">
+      <span class="sheet b1"></span>
+      <span class="sheet b2"></span>
+      <div class="sheet face"><h1>胡嘎游戏</h1></div>
+    </div>
+    <div class="copy">
+      <p>生活中总有许多和朋友在一起的惬意时刻，想要敞开心扉，互相了解。聊些什么好呢？&ldquo;胡嘎&rdquo;是古老印欧语言中那些惬意的，难以言喻的场景。</p>
+      <p>例如，一堆人围坐在火炉旁，或是下雨天对坐在窗边；又或许是在静谧的小院谈心，也可能是在山林海边徒步。</p>
+      <p>而在我看来，胡嘎就是胡乱嘎嘎一顿说的意思，不必有压力，想到什么说什么。</p>
+      <p>请在接下来的卡片上选择一个或三个问题回答。</p>
+    </div>
+    <div class="cta"><button id="start" class="primary">开始胡嘎</button></div>
+  </section>
+
+  <!-- 卡片：整页就是一张卡 -->
+  <section id="play" class="screen hidden">
+    <div class="cardFrame">
+      <div class="cardBody" id="cardBody"></div>
+    </div>
+    <div class="playFoot">
+      <button class="primary" id="next">再来一张</button>
+    </div>
+  </section>
+
+  <!-- 结束 -->
+  <section id="end" class="screen hidden">
+    <h2>都聊完了</h2>
+    <div class="cta"><button class="primary" id="again">再来一轮</button></div>
+  </section>
+</main>
+
+<script>
+/* 每张卡片三个问题，依次显现；不做深浅标示。 */
+const DATA = {"cards":[{"qs":[{"lv":1,"zh":"到目前为止，你人生中最好的一天是哪一天？"},{"lv":2,"zh":"对你来说，完美的一天长什么样？"},{"lv":3,"zh":"你有没有过“日子好到不能再好了”的时刻？"}]},{"qs":[{"lv":1,"zh":"说说你对房间里每个人的第一印象。"},{"lv":2,"zh":"你见过的最有趣的人是谁？"},{"lv":3,"zh":"说一次你对某个人第一印象完全看走眼的经历。"}]},{"qs":[{"lv":1,"zh":"你认识的人里谁最招人喜欢？"},{"lv":2,"zh":"朋友身上你最看重什么品质？"},{"lv":3,"zh":"不算伴侣和家人，谁是对你最好的人？"}]},{"qs":[{"lv":1,"zh":"如果必须换个名字，你会给自己选什么？"},{"lv":2,"zh":"你坚决不会给孩子起什么名字？"},{"lv":3,"zh":"如果你生下来是另一种性别，你可能会叫什么名字？"}]},{"qs":[{"lv":1,"zh":"史上最好听的歌是哪首？"},{"lv":2,"zh":"哪首歌能代表你们这代人？"},{"lv":3,"zh":"哪首歌一听你就想掉眼泪？"}]},{"qs":[{"lv":1,"zh":"你最希望哪部电影出续集？"},{"lv":2,"zh":"你觉得被过誉的电影是哪部？"},{"lv":3,"zh":"如果能演任何一部电影的主角，你选哪部？"}]},{"qs":[{"lv":1,"zh":"现在买纸质词典还有意义吗？"},{"lv":2,"zh":"你喜欢纸质书还是电子书？"},{"lv":3,"zh":"哪本书改变了你的人生？"}]},{"qs":[{"lv":1,"zh":"史上最好看的电视剧是哪一部？"},{"lv":2,"zh":"哪个名人或角色，你能模仿得特别像？"},{"lv":3,"zh":"你小时候的偶像是谁？"}]},{"qs":[{"lv":1,"zh":"买吃的之前，你会看保质期吗？"},{"lv":2,"zh":"如果卡路里不存在、所有食物都健康，你会多吃什么？"},{"lv":3,"zh":"什么气味最能让你想起童年？"}]},{"qs":[{"lv":1,"zh":"你最拿得出手的菜是哪一道？"},{"lv":2,"zh":"你吃过最美味的一餐是什么？"},{"lv":3,"zh":"你从妈妈身上继承了最好的什么？从爸爸身上呢？"}]},{"qs":[{"lv":1,"zh":"动物园里你最喜欢哪种动物？"},{"lv":2,"zh":"你觉得最聪明的动物是什么？"},{"lv":3,"zh":"你和动物之间最糟糕的一次回忆是什么？"}]},{"qs":[{"lv":1,"zh":"哪座城市第一次去就超出了你的预期？"},{"lv":2,"zh":"你旅行途中见过的最美风景在哪里？"},{"lv":3,"zh":"你经历过的最糟糕的一次旅行是什么？"}]},{"qs":[{"lv":1,"zh":"你喜欢在飞机上和陌生人聊天吗？"},{"lv":2,"zh":"如果可以一个人去世界上任何地方度假一周，你去哪儿？"},{"lv":3,"zh":"有没有哪个你去过的地方，你再也不想去了？"}]},{"qs":[{"lv":1,"zh":"你愿意搬到地球的另一端去住吗？"},{"lv":2,"zh":"如果可以住在世界上任何地方，你选哪儿？为什么？"},{"lv":3,"zh":"如果你是一棵树、可以自己选地方扎根，你会种在哪儿？"}]},{"qs":[{"lv":1,"zh":"你排过最长的队，是在排什么？"},{"lv":2,"zh":"你上次去图书馆是什么时候？"},{"lv":3,"zh":"你的长期待办清单上，哪件事好像永远排不上？"}]},{"qs":[{"lv":1,"zh":"如果只能带游客看你们这儿一个地方，你带 TA 去哪？"},{"lv":2,"zh":"你觉得哪个国家是世界上最现代、最发达的？"},{"lv":3,"zh":"你庆幸自己活在当代，还是更想活在过去的某个年代？"}]},{"qs":[{"lv":1,"zh":"如果手机上只能留一个 App，你留哪个？"},{"lv":2,"zh":"你每天会反复打开的网站有哪些？"},{"lv":3,"zh":"你觉得互联网让人更爱社交了，还是更宅了？"}]},{"qs":[{"lv":1,"zh":"你有没有拒绝过或删过别人的微信好友申请？为什么？"},{"lv":2,"zh":"你的微信好友里，有没有你其实不太想见的人？"},{"lv":3,"zh":"你觉得自己刷社交媒体的时间花得值吗？"}]},{"qs":[{"lv":1,"zh":"怎么花 50 块钱最开心？"},{"lv":2,"zh":"你花得最值的 100 块钱，买了什么？"},{"lv":3,"zh":"你觉得自己“拥有太多”的东西是什么？"}]},{"qs":[{"lv":1,"zh":"如果你刚中奖了，可以免费买一辆汽车——你选什么车？"},{"lv":2,"zh":"如果你中了彩票，你会怎么花？"},{"lv":3,"zh":"如果钱够你明天就退休，余生你想怎么过？"}]},{"qs":[{"lv":1,"zh":"你喜欢收现金当礼物吗？"},{"lv":2,"zh":"你收到过最有意义的礼物是什么？"},{"lv":3,"zh":"你收到过哪句夸奖，到现在都忘不了？"}]},{"qs":[{"lv":1,"zh":"哪个品牌你纯粹因为习惯一直用，跟质量没关系？"},{"lv":2,"zh":"你有什么词或口头禅，总是说个不停？"},{"lv":3,"zh":"你觉得人真的会变吗？"}]},{"qs":[{"lv":1,"zh":"你的第一个电子邮箱地址是什么？"},{"lv":2,"zh":"你觉得电子邮件会彻底取代传统信件吗？"},{"lv":3,"zh":"你觉得什么东西五百年后人们还在用？"}]},{"qs":[{"lv":1,"zh":"你个人觉得什么工作最无聊？"},{"lv":2,"zh":"如果学一门外语能让工资翻倍，你愿意下苦功学吗？"},{"lv":3,"zh":"你觉得自己人生的付出和回报成正比吗？"}]},{"qs":[{"lv":1,"zh":"你觉得自己适合做销售吗？"},{"lv":2,"zh":"你过去认识的谁，如今过的日子完全出乎你的意料？"},{"lv":3,"zh":"基于你这几年的经历，你会给别人一条什么建议？"}]},{"qs":[{"lv":1,"zh":"你的朋友里谁最博学、最适合去参加答题比赛？"},{"lv":2,"zh":"你有没有为了显得更有意思而吹过自己的工作？"},{"lv":3,"zh":"你知道自己哪一点最被人欣赏吗？"}]},{"qs":[{"lv":1,"zh":"哪项发明对人类文化和文明的影响最大？"},{"lv":2,"zh":"如今在世的名人里，你觉得谁五百年后还会被人提起？"},{"lv":3,"zh":"你最敬佩什么样的人？"}]},{"qs":[{"lv":1,"zh":"春节、国庆节、五一劳动节——你最喜欢哪个？"},{"lv":2,"zh":"你第一次听到中国申奥成功的时候在哪里？"},{"lv":3,"zh":"到目前为止，你人生中最好的十年是哪一段？"}]},{"qs":[{"lv":1,"zh":"你相信幸运符/护身符有用吗？"},{"lv":2,"zh":"你觉得看手相能算出未来吗？"},{"lv":3,"zh":"你在飞机上祈祷过吗？"}]},{"qs":[{"lv":1,"zh":"什么声音最让你抓狂？"},{"lv":2,"zh":"你有什么说不清道理的恐惧症吗？"},{"lv":3,"zh":"说出一件你回头看会想“天哪，我当年居然怕这个”的事。"}]},{"qs":[{"lv":1,"zh":"你有没有在重要场合睡着过？"},{"lv":2,"zh":"你做的梦有没有反复出现的主题？"},{"lv":3,"zh":"你想提前知道自己会怎么死、什么时候死吗？"}]},{"qs":[{"lv":1,"zh":"什么事会让你脸红？"},{"lv":2,"zh":"你最喜欢自己哪个部位？"},{"lv":3,"zh":"你身上有大伤疤吗？怎么来的？"}]},{"qs":[{"lv":1,"zh":"如果可以改变身体的一处，你改哪里？"},{"lv":2,"zh":"变好看还是变聪明，你选哪个？"},{"lv":3,"zh":"你希望去世后捐献器官吗？"}]},{"qs":[{"lv":1,"zh":"别人说你长得像哪个名人？"},{"lv":2,"zh":"看一个人的外表，能看出很多东西吗？"},{"lv":3,"zh":"现在的人对外表，是太在意还是太不在意？"}]},{"qs":[{"lv":1,"zh":"你自己给自己剪过头发吗？"},{"lv":2,"zh":"你剪坏过头发吗？当时是什么造型？"},{"lv":3,"zh":"说出一件你回头看会想“我居然真干过这事”的事。"}]},{"qs":[{"lv":1,"zh":"你当年觉得最酷的一套穿搭或配饰是什么？"},{"lv":2,"zh":"化妆应该被当作一门艺术吗？"},{"lv":3,"zh":"有没有你的照片，是你恨不得全部销毁的？"}]},{"qs":[{"lv":1,"zh":"拍的照片你会洗出来装裱或做相册吗？"},{"lv":2,"zh":"如果把你的人生拍成电影，你想让哪个演员演你？"},{"lv":3,"zh":"你最想重新体验一次的“第一次”是什么？"}]},{"qs":[{"lv":1,"zh":"你最喜欢用哪种方式浪费时间？"},{"lv":2,"zh":"你一天中效率最高的时段是什么时候？"},{"lv":3,"zh":"你最近一次想放弃是什么时候？"}]},{"qs":[{"lv":1,"zh":"你的生活里，好玩和冒险够不够？"},{"lv":2,"zh":"你想在哪件事上变得更好？"},{"lv":3,"zh":"你有没有过很艰难、但最终让你变得更强大的阶段？"}]},{"qs":[{"lv":1,"zh":"你认为自己是更稳重的人还是喜欢冒险的人？"},{"lv":2,"zh":"讲一次你干过的又鲁莽又大胆的事。"},{"lv":3,"zh":"说一次你觉得自己特别混蛋的时刻。"}]},{"qs":[{"lv":1,"zh":"打游戏或运动时，如果对方水平明显不如你，你会放水吗？"},{"lv":2,"zh":"什么事会让你特别生气？"},{"lv":3,"zh":"补全这句话：我这辈子从没像那次一样生气——当时_____ ___。"}]},{"qs":[{"lv":1,"zh":"你赢得过什么比赛或竞赛吗？"},{"lv":2,"zh":"说一次你紧张得不行的经历。"},{"lv":3,"zh":"说一次你为自己感到特别骄傲的时刻。"}]},{"qs":[{"lv":1,"zh":"讲一次你真心为别人做过的善事。"},{"lv":2,"zh":"最近一次特意绕路去感谢某个人，是什么时候？"},{"lv":3,"zh":"讲一次你帮助陌生人的经历。"}]},{"qs":[{"lv":1,"zh":"这个房间里的人为你做过的最好的事是什么？"},{"lv":2,"zh":"你最近一次为家里人感到特别骄傲，是什么时候？"},{"lv":3,"zh":"你在哪些方面让别人的生活变得更好了？"}]},{"qs":[{"lv":1,"zh":"你们家有很多只有自己人才懂的“内部梗”吗？"},{"lv":2,"zh":"和你处得最好的人，是不是都和你笑点一致？"},{"lv":3,"zh":"你的朋友们各不相同，但他们身上有什么共同点？"}]},{"qs":[{"lv":1,"zh":"你喜欢朋友不打招呼就上门吗？"},{"lv":2,"zh":"如果只许用三个词，你觉得最好的朋友会怎么形容你？"},{"lv":3,"zh":"你有没有跟曾经的“死对头”变成过好朋友？"}]},{"qs":[{"lv":1,"zh":"哪位老同学突然联系你约饭，你会特别开心？"},{"lv":2,"zh":"你还和初恋有联系吗？"},{"lv":3,"zh":"已经离开的亲人里，你最想念谁？"}]},{"qs":[{"lv":1,"zh":"你爸妈最大的不同是什么？"},{"lv":2,"zh":"年纪越大，你有没有发现自己越来越像爸妈？"},{"lv":3,"zh":"你觉得如果换了父母，你会是完全不同的一个人吗？"}]},{"qs":[{"lv":1,"zh":"你长得最像家里哪一位？"},{"lv":2,"zh":"你们家里人谁的性格和大家最不一样？"},{"lv":3,"zh":"你童年哪件事，大概欠爸妈一句道歉？"}]},{"qs":[{"lv":1,"zh":"你的家谱能往上追溯多少代？"},{"lv":2,"zh":"你知道爷爷奶奶、外公外婆分别是怎么认识的吗？"},{"lv":3,"zh":"你们家有什么代代相传的天赋吗？"}]},{"qs":[{"lv":1,"zh":"父母有权给孩子随便起名吗，哪怕名字再怪、再不合适？"},{"lv":2,"zh":"父母应该把自己的信念传给孩子，还是让孩子自己慢慢探索？"},{"lv":3,"zh":"如果发现孩子在学校被霸凌，你会怎么办？"}]},{"qs":[{"lv":1,"zh":"好的育儿方式是学出来的，还是天生的？"},{"lv":2,"zh":"我们能从孩子身上学到什么？"},{"lv":3,"zh":"有没有小时候爸妈不让你做、而你现在（会）允许自己孩子做的事？"}]},{"qs":[{"lv":1,"zh":"你和小孩子处得来吗？"},{"lv":2,"zh":"怀孕的时候，你更想知道宝宝的性别，还是等到出生再惊喜？"},{"lv":3,"zh":"你猜你爸妈会怎么回答“你小时候干过最疯的事是什么”？"}]},{"qs":[{"lv":1,"zh":"你觉得独生子女比有兄弟姐妹的孩子有什么优势？"},{"lv":2,"zh":"在大家庭长大好，还是小家庭好？"},{"lv":3,"zh":"你觉得老人回顾一生时，最后悔的是什么？"}]},{"qs":[{"lv":1,"zh":"恋爱的好处是什么？单身的好处是什么？"},{"lv":2,"zh":"你比一般人更浪漫，还是更不浪漫？"},{"lv":3,"zh":"在一段关系里，有没有什么是你无论如何不肯放弃的？"}]},{"qs":[{"lv":1,"zh":"你觉得交往多久再结婚比较合适？"},{"lv":2,"zh":"20 岁结婚是不是太早了？"},{"lv":3,"zh":"你觉得为什么这么多婚姻最后以离婚收场？"}]},{"qs":[{"lv":1,"zh":"你收到过最浪漫的情人节礼物是什么？"},{"lv":2,"zh":"你第一个认真喜欢的人叫什么名字？"},{"lv":3,"zh":"你经历过心碎吗？"}]},{"qs":[{"lv":1,"zh":"只用三个词，你怎么在交友网站上介绍自己？"},{"lv":2,"zh":"你会在身上纹对象的名字吗？"},{"lv":3,"zh":"你有没有说过言不由衷的“我爱你”？"}]},{"qs":[{"lv":1,"zh":"你暗恋过哪个名人？是谁？"},{"lv":2,"zh":"是你去“寻找爱情”，还是“爱情找上你”？"},{"lv":3,"zh":"你有没有交往过父母或朋友都看不上的对象？"}]},{"qs":[{"lv":1,"zh":"你相信一见钟情吗？"},{"lv":2,"zh":"男人和女人真能做“纯友谊”的朋友吗？"},{"lv":3,"zh":"你会考虑和一个自己不爱的人生孩子吗？"}]},{"qs":[{"lv":1,"zh":"情侣吵架，吵得最多的多半是为了什么？"},{"lv":2,"zh":"敏感是弱点还是优势？"},{"lv":3,"zh":"爱和恨，哪种情绪更强烈？"}]},{"qs":[{"lv":1,"zh":"如果能看到未来，你想往前看多远？"},{"lv":2,"zh":"如果情侣能读彼此的心思，离婚会更多还是更少？"},{"lv":3,"zh":"如果保证能得到诚实的回答，你最想问谁、问什么？"}]},{"qs":[{"lv":1,"zh":"你有没有干过坏事被当场抓包？"},{"lv":2,"zh":"你做过世界上只有极少数人做过的事吗？"},{"lv":3,"zh":"你有没有犯过罪，或者差一点就犯了？"}]},{"qs":[{"lv":1,"zh":"对新的一年，你最大的愿望是什么？"},{"lv":2,"zh":"你的新年愿望实现过吗？"},{"lv":3,"zh":"说一个你拒绝了、但现在恨不得当初答应下来的机会。"}]},{"qs":[{"lv":1,"zh":"你有没有过“来得早不如来得巧”的经历？"},{"lv":2,"zh":"你回头看什么事，会想“我再也不会干这种事了”？"},{"lv":3,"zh":"如果能重活你人生中的一天，你选哪一天？"}]},{"qs":[{"lv":1,"zh":"如果有时光机，你想去未来还是过去？"},{"lv":2,"zh":"如果能回到过去见到 10 岁的自己，你会给自己什么建议？"},{"lv":3,"zh":"失去过去所有的记忆，或者失去形成新记忆的能力——你选哪个？"}]},{"qs":[{"lv":1,"zh":"未来十二个月，你最期待什么？"},{"lv":2,"zh":"你觉得五年后，你生活里最大的变化会是什么？"},{"lv":3,"zh":"“好好生活”对你来说意味着什么？"}]},{"qs":[{"lv":1,"zh":"你觉得人要幸福，最重要的两样东西是什么？"},{"lv":2,"zh":"你觉得人一般几岁的时候最幸福？"},{"lv":3,"zh":"你觉得人生的意义是什么？"}]},{"qs":[{"lv":1,"zh":"爱情和金钱，哪个更好？"},{"lv":2,"zh":"恐惧、金钱、爱——哪个是最强的驱动力？"},{"lv":3,"zh":"有研究者说人的幸福度是改不了的——就算中了彩票，很快也会回到原来的水平。你信吗？"}]},{"qs":[{"lv":1,"zh":"你觉得我们这个时代的生活方式，一个好和一个不好的地方分别是什么？"},{"lv":2,"zh":"这个世界需要更多什么？"},{"lv":3,"zh":"你觉得战争带来过什么好东西吗？"}]},{"qs":[{"lv":1,"zh":"服务很差的时候，你会投诉或者给差评吗？"},{"lv":2,"zh":"为了不伤害别人的感情，可以说谎吗？"},{"lv":3,"zh":"人天生是善良的还是自私的？"}]},{"qs":[{"lv":1,"zh":"坐牢有没有什么好处？"},{"lv":2,"zh":"如果你能立一条所有人都必须遵守的法律，你立什么？"},{"lv":3,"zh":"你相信罪犯在监狱里能被真正改造好吗？"}]},{"qs":[{"lv":1,"zh":"学生穿校服，是好主意还是坏主意？"},{"lv":2,"zh":"你觉得义务教育是必要的吗？"},{"lv":3,"zh":"学生可以给老师打分吗？"}]},{"qs":[{"lv":1,"zh":"应该禁止向儿童投放广告吗？"},{"lv":2,"zh":"你会考虑自己在家教孩子、不送孩子上学吗？"},{"lv":3,"zh":"有没有什么事是永远不该拿来开玩笑的？"}]},{"qs":[{"lv":1,"zh":"你觉得超光速旅行有可能实现吗？"},{"lv":2,"zh":"你觉得暴力游戏和暴力电影会让人变暴力吗？"},{"lv":3,"zh":"天才和疯子，是不是一线之隔？"}]},{"qs":[{"lv":1,"zh":"你会怎么定义“聪明”？"},{"lv":2,"zh":"你觉得智商测试能真正衡量一个人的智力吗？"},{"lv":3,"zh":"你觉得成功的人靠的是哪一种关键特质？"}]},{"qs":[{"lv":1,"zh":"你十岁的时候最喜欢干什么？"},{"lv":2,"zh":"小时候有没有什么特别想要、却一直没得到的东西？"},{"lv":3,"zh":"你父母有没有试图引导你走某条职业道路？"}]},{"qs":[{"lv":1,"zh":"你小时候有外号吗？"},{"lv":2,"zh":"你小时候有没有瞒着爸妈藏过什么？"},{"lv":3,"zh":"哪位老师对你影响最大？"}]},{"qs":[{"lv":1,"zh":"你觉得学校里最重要的科目是什么？"},{"lv":2,"zh":"你觉得学校里最没用的科目是什么？"},{"lv":3,"zh":"人到几岁，就该对自己的行为百分百负责？"}]},{"qs":[{"lv":1,"zh":"你上学时逃过课吗？"},{"lv":2,"zh":"你在学校学过什么东西，到今天一点用都没有？"},{"lv":3,"zh":"小时候家里有哪条规矩严得离谱？"}]},{"qs":[{"lv":1,"zh":"你小时候在游乐场最喜欢玩什么？"},{"lv":2,"zh":"你小时候的暑假都怎么过？"},{"lv":3,"zh":"你最早的记忆是什么？"}]},{"qs":[{"lv":1,"zh":"你小时候长大想做什么？"},{"lv":2,"zh":"学习哪门功课你从来不用发愁？"},{"lv":3,"zh":"谁是你人生中最大的榜样？"}]},{"qs":[{"lv":1,"zh":"你高中时混的是哪个圈子？"},{"lv":2,"zh":"和好朋友在一起最开心的回忆是什么？"},{"lv":3,"zh":"流落荒岛只能带一个人：你选你爸还是你妈？为什么？"}]},{"qs":[{"lv":1,"zh":"不算房子和车，你买过最贵的东西是什么？"},{"lv":2,"zh":"你最喜欢支持哪类公益或慈善？"},{"lv":3,"zh":"你有没有为说真话付出过金钱上的代价？"}]},{"qs":[{"lv":1,"zh":"谁是世界上名气最名不副实的人？"},{"lv":2,"zh":"演员和职业运动员挣得是不是太多了？"},{"lv":3,"zh":"如果大多数总统和 CEO 都是女性，世界会有什么不同？"}]},{"qs":[{"lv":1,"zh":"你能用几种语言说“我爱你”？"},{"lv":2,"zh":"抛开长相不谈，你觉得男人和女人最大的区别是什么？"},{"lv":3,"zh":"如果全世界都说同一种语言，冲突会不会更少？"}]},{"qs":[{"lv":1,"zh":"如果能在日历上再添一个月，你会把它放在哪儿？"},{"lv":2,"zh":"如果一天突然变成 28 小时，多出来的时间你打算怎么花？"},{"lv":3,"zh":"如果让全世界听你说 30 秒，你会说什么或做什么？"}]},{"qs":[{"lv":1,"zh":"如果你能隐身，第一件事做什么？"},{"lv":2,"zh":"除了钱以外，任何东西都可以要一百万个——你会要什么？"},{"lv":3,"zh":"如果能带一件现代物品回到一八零零年炫技，你带什么？"}]},{"qs":[{"lv":1,"zh":"如果你是亿万富翁，你典型的一天会是什么样？"},{"lv":2,"zh":"你愿意和自己的克隆人一起吃饭吗？"},{"lv":3,"zh":"如果能改年龄，你想更年轻、更老，还是保持现状？"}]},{"qs":[{"lv":1,"zh":"如果可以当一天名人，你当谁？为什么？"},{"lv":2,"zh":"如果来世可以投胎成任何动物，你选什么？"},{"lv":3,"zh":"如果一个来自公元 3000 年的人看到我们今天的生活，什么最让他吃惊？"}]},{"qs":[{"lv":1,"zh":"你觉得一百年之后，所有购物都会搬到网上吗？"},{"lv":2,"zh":"你觉得现金会在你有生之年消失吗？"},{"lv":3,"zh":"如果梦可以录成视频，你会想看吗？"}]},{"qs":[{"lv":1,"zh":"死前每个人都该去看一眼的地方是哪里？"},{"lv":2,"zh":"理想的退休年龄是几岁？"},{"lv":3,"zh":"变老最糟糕的是什么？"}]},{"qs":[{"lv":1,"zh":"你喜欢在家办公吗？"},{"lv":2,"zh":"如果你要招一个人，你最看重的三条标准是什么？"},{"lv":3,"zh":"如果非得说一件别人可能羡慕你的事，会是什么？"}]},{"qs":[{"lv":1,"zh":"你现在住的地方，最好和最糟的分别是什么？"},{"lv":2,"zh":"你最喜欢的“罪恶快感”是什么？（偷偷享受、不太好意思承认的那种）"},{"lv":3,"zh":"上一次哭是什么时候？"}]},{"qs":[{"lv":1,"zh":"猫和狗，谁更聪明？"},{"lv":2,"zh":"你吃过最奇怪的东西是什么？"},{"lv":3,"zh":"你经历过自然灾害或突发危机吗？"}]},{"qs":[{"lv":1,"zh":"如果家里着火，你会抢救哪两样东西？"},{"lv":2,"zh":"你有没有一件不值钱、但给你一万块也不卖的东西？"},{"lv":3,"zh":"如果你死后只能留下一张照片，你选哪一张？"}]},{"qs":[{"lv":1,"zh":"你喜欢买二手的东西来用吗？"},{"lv":2,"zh":"你会用自己的双手做些什么、造些什么？"},{"lv":3,"zh":"你最近弄丢（或以为弄丢了）的东西是什么？"}]},{"qs":[{"lv":1,"zh":"你觉得家里最重要的房间是哪个？"},{"lv":2,"zh":"如果家里能多出一间房，你想拿来做什么？"},{"lv":3,"zh":"为什么现在独居的人比过去多这么多？"}]},{"qs":[{"lv":1,"zh":"家里干净整洁对你有多重要？"},{"lv":2,"zh":"家里的墙，你喜欢白墙、刷彩色还是贴壁纸？"},{"lv":3,"zh":"你觉得人生最好的时光是过去、现在，还是未来？"}]},{"qs":[{"lv":1,"zh":"你睡觉是侧睡、趴睡还是仰睡？"},{"lv":2,"zh":"你睡觉总固定睡床的同一侧吗？"},{"lv":3,"zh":"睡着之前你一般在想什么？"}]},{"qs":[{"lv":1,"zh":"你跟风试过什么减肥法/增肌法吗？"},{"lv":2,"zh":"你最长时间不睡觉撑了多久？"},{"lv":3,"zh":"你有什么和大多数人不一样的习惯？"}]},{"qs":[{"lv":1,"zh":"不用试，你觉得自己能舔到手肘吗？"},{"lv":2,"zh":"有没有什么运动或爱好，你怎么都 get 不到它的魅力？"},{"lv":3,"zh":"过去这一年，你有没有第一次尝试什么新东西？"}]},{"qs":[{"lv":1,"zh":"如果此刻可以站在世界上任何地方，你会选哪里？"},{"lv":2,"zh":"如果可以和任何人共度一整天，你选谁？"},{"lv":3,"zh":"说一件大多数人都不知道的、关于你的事。"}]},{"qs":[{"lv":1,"zh":"你去过的最棒的派对是哪一次？"},{"lv":2,"zh":"说说坐在你旁边的这个人擅长什么。"},{"lv":3,"zh":"你擅长讲笑话吗？"}]},{"qs":[{"lv":1,"zh":"用三个词形容一个和你完全相反的人。"},{"lv":2,"zh":"你有没有过特别奇怪、或让你印象很深的邻居或室友？"},{"lv":3,"zh":"你觉得你有可能和某位名人认识并成为好朋友吗？"}]},{"qs":[{"lv":1,"zh":"你有没有觉得自己没戏、结果反而赢了的经历？"},{"lv":2,"zh":"哪种工资不高的职业最值得涨薪？"},{"lv":3,"zh":"有什么事业值得你付出生命？"}]},{"qs":[{"lv":1,"zh":"你对什么东西过敏吗？"},{"lv":2,"zh":"你挑食吗？"},{"lv":3,"zh":"你觉得自己的字好看吗？"}]},{"qs":[{"lv":1,"zh":"如果你中了彩票，会告诉大家还是保密？"},{"lv":2,"zh":"如果钱不是问题，你想尝试在什么事情上烧钱？"},{"lv":3,"zh":"你们家里谁运气最好？"}]},{"qs":[{"lv":1,"zh":"如果发现一个人有纹身，你对他的看法会变吗？"},{"lv":2,"zh":"你最希望自己能流利说哪一门外语？"},{"lv":3,"zh":"总的来说，当小孩更容易，还是当大人更容易？"}]},{"qs":[{"lv":1,"zh":"你有没有买东西买得很尴尬过？买的是什么？"},{"lv":2,"zh":"你小时候有什么特别擅长的东西？"},{"lv":3,"zh":"如果只能二选一：余生一直坐着和一直站着，你会选哪个？"}]}]};
+
+const STORE_KEY = "huga.state.v3";
+/* 开局先给的那张卡（含这道题的卡排在最前） */
+const FIRST_HINT = "如果可以当一天名人";
+const $ = (id) => document.getElementById(id);
+
+let state = null;   // { order:[卡序号], pos:number }
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORE_KEY);
+    if(!raw) return null;
+    const s = JSON.parse(raw);
+    if(!s || !Array.isArray(s.order) || s.order.length !== DATA.cards.length) return null;
+    if(typeof s.pos !== "number" || s.pos >= s.order.length) return null;
+    if(s.pos === 0) fixFirst(s.order);      /* 还没开始答：确保第一张是固定的那张 */
+    return s;
+  }catch(e){ return null; }
+}
+function saveState(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){} }
+function fixFirst(order){
+  const k = order.findIndex(i => DATA.cards[i].qs.some(q => q.zh.indexOf(FIRST_HINT) === 0));
+  if(k > 0){ const c = order.splice(k, 1)[0]; order.unshift(c); }
+  return order;
+}
+function newState(){
+  const order = DATA.cards.map((_, i) => i);
+  for(let i = order.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [order[i], order[j]] = [order[j], order[i]];
+  }
+  fixFirst(order);
+  return { order, pos: 0 };
+}
+
+function show(id){
+  ["intro","play","end"].forEach(s => $(s).classList.toggle("hidden", s !== id));
+  window.scrollTo(0, 0);
+}
+function escapeHTML(s){
+  return s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
+}
+function renderCard(){
+  const card = DATA.cards[state.order[state.pos]];
+  show("play");                       /* 先显屏，再生成内容，动画才会从第一帧开始放 */
+  const host = $("cardBody");
+  host.innerHTML = '<div class="rows">' +
+    card.qs.map(q => '<div class="row"><p>' + escapeHTML(q.zh) + '</p></div>').join("") +
+    '</div>';
+}
+function advance(){
+  state.pos++;
+  saveState();
+  if(state.pos >= state.order.length){ show("end"); return; }
+  renderCard();
+}
+
+$("start").addEventListener("click", () => {
+  if(!state) state = newState();
+  saveState();
+  renderCard();
+});
+$("next").addEventListener("click", advance);
+$("again").addEventListener("click", () => { state = newState(); saveState(); renderCard(); });
+
+/* 左右滑动切卡 */
+let sx = null;
+document.addEventListener("touchstart", e => { sx = e.touches[0].clientX; }, {passive:true});
+document.addEventListener("touchend", e => {
+  if(sx === null || $("play").classList.contains("hidden")){ sx = null; return; }
+  const dx = e.changedTouches[0].clientX - sx; sx = null;
+  if(Math.abs(dx) > 70) advance();
+}, {passive:true});
+
+state = loadState();
+
+/* 离线可用：从家常打开一次后，饭店里无网也能玩（联网时优先拿新版） */
+if("serviceWorker" in navigator && location.protocol.indexOf("http") === 0){
+  navigator.serviceWorker.register("./sw.js").catch(function(){});
+}
+</script>
+</body>
+</html>
