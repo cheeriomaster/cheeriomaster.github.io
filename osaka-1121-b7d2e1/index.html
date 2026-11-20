@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>11月21日 · 大阪站购物与去机场｜回国当天</title>
+<link rel="stylesheet" href="leaflet/leaflet.css">
+<style>
+  :root{
+    --paper:#F7F4EC;
+    --card:#FFFDF8;
+    --ink:#2B2B28;
+    --ink2:#5A564E;
+    --line:#E2DCCE;
+    --green:#4A5D52;
+    --orange:#B0743F;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans CJK SC","PingFang SC",sans-serif;
+    font-size:17px;line-height:1.65;padding:0 0 70px;
+  }
+  .wrap{max-width:700px;margin:0 auto;padding:0 18px}
+  header{padding:32px 0 20px;border-bottom:1px solid var(--line);margin-bottom:18px}
+  .date{font-size:14px;letter-spacing:.14em;color:var(--ink2);margin:0 0 8px}
+  header h1{font-size:26px;line-height:1.35;margin:0 0 10px;font-weight:600}
+  .sub{font-size:15px;color:var(--ink2);margin:0}
+
+  #map{
+    height:min(58vh,440px);border-radius:12px;overflow:hidden;
+    border:1px solid var(--line);margin:18px 0 10px;background:#EDEAE1;
+  }
+  .mapnote{font-size:13px;color:var(--ink2);margin:0 0 26px;line-height:1.55}
+
+  .stop{
+    background:var(--card);border:1px solid var(--line);border-radius:12px;
+    padding:15px 16px 13px;margin:0 0 12px;display:flex;gap:13px;
+  }
+  .num{
+    flex:0 0 27px;height:27px;border-radius:50%;background:var(--orange);color:#fff;
+    font-size:14px;display:flex;align-items:center;justify-content:center;
+    font-weight:600;margin-top:2px;
+  }
+  .stop.air .num{background:var(--green)}
+  .body{flex:1 1 auto;min-width:0}
+  .when{font-size:13px;color:var(--ink2);letter-spacing:.02em;margin:0 0 2px}
+  .name{font-size:18px;font-weight:600;margin:0 0 3px;line-height:1.4}
+  .desc{font-size:15px;color:var(--ink2);margin:0}
+  .nav{margin-top:10px;display:flex;flex-wrap:wrap;gap:8px}
+  .nav a{
+    display:inline-block;font-size:14px;padding:6px 12px;border-radius:20px;
+    border:1px solid var(--line);color:var(--orange);background:#F2EEE3;
+    text-decoration:none;white-space:nowrap;
+  }
+  .stop.air .nav a{color:var(--green)}
+  .nav a.here{color:var(--ink2);background:transparent;border-style:dashed;pointer-events:none}
+
+  h2.section{
+    font-size:15px;letter-spacing:.1em;color:var(--ink2);font-weight:600;
+    margin:32px 0 14px;padding-bottom:8px;border-bottom:1px solid var(--line);
+  }
+  .hard{
+    background:#EFEADD;border-radius:12px;padding:15px 17px;margin:26px 0 0;
+    font-size:15px;line-height:1.7;
+  }
+  .hard b{font-weight:600}
+  .hard p{margin:0 0 9px}
+  .hard p:last-child{margin:0}
+  .money{
+    background:var(--card);border:1px solid var(--line);border-radius:12px;
+    padding:14px 17px;margin:16px 0 0;font-size:15px;line-height:1.75;
+  }
+  .money .row{display:flex;justify-content:space-between;gap:12px}
+  .money .row span:last-child{color:var(--ink2);white-space:nowrap}
+  .money .tot{border-top:1px solid var(--line);margin-top:8px;padding-top:8px;font-weight:600}
+  .money .tot span:last-child{color:var(--ink)}
+  .shop{
+    background:var(--card);border:1px solid var(--line);border-radius:12px;
+    padding:15px 16px;margin:0 0 12px;font-size:15px;line-height:1.7;
+  }
+  .shop h3{font-size:17px;font-weight:600;margin:0 0 4px}
+  .shop .hours{font-size:13px;color:var(--ink2);margin:0 0 7px;letter-spacing:.02em}
+  .shop p{margin:0 0 5px;color:var(--ink2)}
+  .shop p:last-child{margin:0}
+  footer{font-size:13px;color:var(--ink2);margin-top:30px;padding-top:16px;border-top:1px solid var(--line);line-height:1.6}
+  .leaflet-popup-content{font-size:13px;line-height:1.55;margin:10px 12px}
+  .leaflet-popup-content b{font-weight:600}
+  .pin{
+    width:26px;height:26px;border-radius:50%;background:#B0743F;color:#fff;
+    font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;
+    box-shadow:0 1px 4px rgba(0,0,0,.28);border:2px solid #FFFDF8;
+  }
+  .pin.air{background:#4A5D52}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <p class="date">2026 年 11 月 21 日 · 土曜日</p>
+  <h1>大阪站购物 · 19:00 去机场</h1>
+  <p class="sub">橙色是在大阪站一带逛的三家商场，绿色是最后两段。行李存在大阪站，不从难波绕：全程只往回走一次，就是去取行李。</p>
+</header>
+
+<div id="map"></div>
+<p class="mapnote">地图只标位置，不画具体路线。点每一步下面的按钮，直接进 Google 地图看怎么走；Google 给的和我写的不一样，就按 Google 走。</p>
+
+<h2 class="section">按顺序走</h2>
+
+<div class="stop">
+  <div class="num">1</div>
+  <div class="body">
+    <p class="when">09:45 退房</p>
+    <p class="name">b&amp; 道顿堀 2 号店</p>
+    <p class="desc">退房前把充电器、护照、钱包三样过一遍。行李直接从酒店拖到难波站，路上十几分钟。</p>
+    <div class="nav"><a class="here">起点</a></div>
+  </div>
+</div>
+
+<div class="stop">
+  <div class="num">2</div>
+  <div class="body">
+    <p class="when">10:05 上车 · 8 分钟</p>
+    <p class="name">なんば駅 · 御堂筋線</p>
+    <p class="desc">红圈里一个 M 的地铁标志。找往「梅田」方向的列车，8 分钟到梅田，¥240，刷西瓜卡进站就行。别去南海难波，那是去机场的另一条线。</p>
+    <div class="nav"><a href="https://www.google.com/maps/dir/?api=1&amp;travelmode=walking&amp;origin=34.670193,135.508362&amp;destination=34.666000,135.501800" target="_blank" rel="noopener">从酒店走到なんば駅</a></div>
+  </div>
+</div>
+
+<div class="stop">
+  <div class="num">3</div>
+  <div class="body">
+    <p class="when">10:15 – 10:35</p>
+    <p class="name">梅田駅 → 大阪駅</p>
+    <p class="desc">两个站不是同一个，但地下通着，跟着「JR線」的黄牌走十分钟就到。别出地面再找，出错了容易绕。</p>
+    <div class="nav"><a href="https://www.google.com/maps/dir/?api=1&amp;travelmode=transit&amp;origin=34.666000,135.501800&amp;destination=34.704200,135.498600" target="_blank" rel="noopener">なんば→梅田</a><a href="https://www.google.com/maps/dir/?api=1&amp;travelmode=walking&amp;origin=34.704200,135.498600&amp;destination=34.702500,135.495900" target="_blank" rel="noopener">梅田→大阪駅</a></div>
+  </div>
+</div>
+
+<div class="stop">
+  <div class="num">4</div>
+  <div class="body">
+    <p class="when">10:35 – 10:45 存行李</p>
+    <p class="name">Crosta 手荷物預かり</p>
+    <p class="desc">JR 大阪駅 1F 北侧中央、改札外面，9:00–20:00，¥1,000 一件一天。三件三千，有人看着比投币柜稳。<b>20:00 前必须取</b>，这是今天唯一不能滑的点。</p>
+    <div class="nav"><a href="https://www.google.com/maps/dir/?api=1&amp;travelmode=walking&amp;origin=34.702500,135.495900&amp;destination=34.703100,135.495900" target="_blank" rel="noopener">从大阪駅走过去</a></div>
+  </div>
+</div>
+
+<div class="stop">
+  <div class="num">5</div>
+  <div class="body">
+    <p class="when">10:45 – 12:00</p>
+    <p class="name">大丸梅田店</p>
+    <p class="desc">大阪駅南口直结，10:00 开门、20:00 关门。B1 食品层和楼上的化妆品最值得看，送礼盒装在这里挑。免税柜台在店里，护照随身带着。</p>
+    <div class="nav"><a href="https://www.google.com/maps/dir/?api=1&amp;travelmode=walking&amp;origin=34.703100,135.495900&amp;destination=34.702200,135.496800" target="_blank" rel="noopener">走过去</a></div>
+  </div>
+</div>
+
+<div class="stop">
+  <div class="num">6</div>
+  <div class="body">
+    <p class="when">12:00 – 12:30</p>
+    <p class="name">KITTE OSAKA 2F · 各地物产</p>
+    <p class="desc">从大丸 2F 连廊直接进 KITTE 2F，不用出商场、不用过马路。这一层是各地物产直营店，手信在这儿买最省事，一趟齐。</p>
+    <div class="nav"><a href="https://www.google.com/maps/dir/?api=1&amp;travelmode=walking&amp;origin=34.702200,135.496800&amp;destination=34.700523,135.494797" target="_blank" rel="noopener">大丸→KITTE</a></div>
+  </div>
+</div>
+
+<div class="stop">
+  <div class="num">7</div>
+  <div class="body">
+    <p class="when">12:30 – 14:00</p>
+    <p class="name">KITTE 4–5F · 午饭</p>
+    <p class="desc">饮食层到 23:00，中午排队不长。吃完直接下楼逛，不用换地方。</p>
+    <div class="nav"><a class="here">就在这栋楼</a></div>
+  </div>
+</div>
+
+<div class="stop">
+  <div class="num">8</div>
+  <div class="body">
+    <p class="when">14:00 – 15:30</p>
+    <p class="name">KITTE 1–3F · 物贩</p>
+    <p class="desc">1–3F 物贩 11:00–20:00，B1 七点就开。要买的东西在这儿收尾，别拖到最后跟取行李挤在一起。</p>
+    <div class="nav"><a class="here">就在这栋楼</a></div>
+  </div>
+</div>
+
+<div class="stop">
+  <div class="num">9</div>
+  <div class="body">
+    <p class="when">15:30 – 17:30</p>
+    <p class="name">LUCUA / LUCUA 1100</p>
+    <p class="desc">大阪駅楼上，10:00–21:00。年轻品牌和杂货多，两家店分别在駅的南北两侧，用站内连廊串起来。</p>
+    <div class="nav"><a href="https://www.google.com/maps/dir/?api=1&amp;travelmode=walking&amp;origin=34.700523,135.494797&amp;destination=34.703700,135.495600" target="_blank" rel="noopener">KITTE→LUCUA</a></div>
+  </div>
+</div>
+
+<div class="stop">
+  <div class="num">10</div>
+  <div class="body">
+    <p class="when">17:30 – 18:40</p>
+    <p class="name">LUCUA 10F · 晚饭</p>
+    <p class="desc">回家前最后一顿，吃完就取行李。18:40 一定要动身，别等菜上齐了才看表。</p>
+    <div class="nav"><a class="here">就在这栋楼</a></div>
+  </div>
+</div>
+
+<div class="stop air">
+  <div class="num">11</div>
+  <div class="body">
+    <p class="when">18:40 – 19:00 取行李</p>
+    <p class="name">回 Crosta 取行李 → 1 番线</p>
+    <p class="desc">取完行李直接进改札，找 1 番线。关空快速每 15 分钟左右一班，19:00 前后上车，20:05 左右到关西空港。</p>
+    <div class="nav"><a href="https://www.google.com/maps/dir/?api=1&amp;travelmode=walking&amp;origin=34.703700,135.495600&amp;destination=34.703100,135.495900" target="_blank" rel="noopener">LUCUA→Crosta</a><a href="https://www.google.com/maps/dir/?api=1&amp;travelmode=transit&amp;origin=34.703100,135.495900&amp;destination=34.430109,135.230360" target="_blank" rel="noopener">大阪駅→关西空港</a></div>
+  </div>
+</div>
+
+<div class="stop air">
+  <div class="num">12</div>
+  <div class="body">
+    <p class="when">20:15 上 4F · 22:10 起飞</p>
+    <p class="name">关西空港 第 1 ターミナル · G 岛</p>
+    <p class="desc">上 4F 出发层，找吉祥航空的柜台 G 岛。<b>21:10 柜台截止</b>，之后就不能办了。办完过安检，22:10 起飞，23:40 落浦东。</p>
+    <div class="nav"><a class="here">终点</a></div>
+  </div>
+</div>
+
+<div class="hard">
+  <p><b>关空快速在日根野会分车。</b>前四节去关西空港，后四节去和歌山。上车前看车厢门口的牌子，坐前四节。</p>
+  <p><b>行李 20:00 前必须取出来</b>，Crosta 关门就没人了。这是今天唯一一处滑了就麻烦的地方。</p>
+  <p><b>吉祥柜台 21:10 截止。</b>19:00 上车、20:05 到空港，中间留足了一小时，来得及；但别再往后拖。</p>
+  <p><b>三家店的关门时间不一样：</b>大丸 20:00、KITTE 物贩 20:00、LUCUA 21:00。买大件趁下午，别留到晚上。</p>
+</div>
+
+<h2 class="section">这三家商场是什么</h2>
+
+<div class="shop">
+  <h3>大丸梅田店</h3>
+  <p class="hours">10:00 – 20:00 · 大阪駅南口直结</p>
+  <p>老牌百货，B1 食品层最强：和果子、便当、礼盒都在这一层。楼上化妆品和服饰，<b>免税柜台在店内</b>，买够额度当场办。</p>
+  <p>适合买：送人的礼盒、化妆品、要包装得体面的东西。</p>
+</div>
+
+<div class="shop">
+  <h3>KITTE OSAKA</h3>
+  <p class="hours">B1 7:00–23:00 · 1–3F 11:00–20:00 · 4–5F 11:00–23:00 · 6F 9:00–23:00</p>
+  <p>大阪駅西口直结，2024 年才开的。2F 是各地物产直营店，一趟能把手信买齐；4–5F 是餐饮。楼新、人比大丸少。</p>
+  <p>适合买：各地土产、伴手礼、想吃顿稳的午饭。</p>
+</div>
+
+<div class="shop">
+  <h3>LUCUA / LUCUA 1100</h3>
+  <p class="hours">10:00 – 21:00 · 大阪駅楼上</p>
+  <p>开在车站建筑里，年轻人买的那一类：服饰、杂货、文具、小家电。10F 是餐饮层，晚饭在那儿解决。</p>
+  <p>适合买：给自己和家里小辈的东西、随便逛逛。</p>
+</div>
+
+<h2 class="section">钱（一人）</h2>
+<div class="money">
+  <div class="row"><span>なんば → 梅田（御堂筋線）</span><span>¥240</span></div>
+  <div class="row"><span>Crosta 存行李（三件）</span><span>¥3,000</span></div>
+  <div class="row"><span>大阪駅 → 関西空港（关空快速）</span><span>¥1,210</span></div>
+  <div class="row tot"><span>交通与寄存合计</span><span>约 ¥4,450</span></div>
+</div>
+
+<footer>
+  地标坐标按日本国土地理院地址检索与公开资料核对；营业时间以店里当天公告为准，路线请以 Google 地图现场结果为准。<br>
+  11 月 21 日 · 大阪站 → 关西空港
+</footer>
+
+</div>
+
+<script src="leaflet/leaflet.js"></script>
+<script>
+const STOPS = [
+  {n:1,  name:'b& 道顿堀 2 号店', ll:[34.670193,135.508362], air:false, when:'09:45 退房'},
+  {n:2,  name:'なんば駅 · 御堂筋線', ll:[34.666000,135.501800], air:false, when:'10:05 上车'},
+  {n:3,  name:'梅田駅 → 大阪駅',    ll:[34.704200,135.498600], air:false, when:'10:15–10:35'},
+  {n:4,  name:'Crosta 存行李',      ll:[34.703100,135.495900], air:false, when:'10:35–10:45'},
+  {n:5,  name:'大丸梅田店',          ll:[34.702200,135.496800], air:false, when:'10:45–12:00'},
+  {n:6,  name:'KITTE 2F · 物产',    ll:[34.700523,135.494797], air:false, when:'12:00–12:30'},
+  {n:7,  name:'KITTE 4–5F · 午饭',  ll:[34.700523,135.494797], air:false, when:'12:30–14:00'},
+  {n:8,  name:'KITTE 1–3F · 物贩',  ll:[34.700523,135.494797], air:false, when:'14:00–15:30'},
+  {n:9,  name:'LUCUA / LUCUA 1100', ll:[34.703700,135.495600], air:false, when:'15:30–17:30'},
+  {n:10, name:'LUCUA 10F · 晚饭',   ll:[34.703700,135.495600], air:false, when:'17:30–18:40'},
+  {n:11, name:'取行李 → 1 番线',     ll:[34.703100,135.495900], air:true,  when:'18:40–19:00'},
+  {n:12, name:'関西空港 第 1 ターミナル', ll:[34.430109,135.230360], air:true, when:'20:15 上 4F'}
+];
+
+const map = L.map('map',{scrollWheelZoom:true,zoomControl:true});
+L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png',{
+  maxZoom:18, attribution:'国土地理院'
+}).addTo(map);
+
+L.polyline([[34.670193,135.508362],[34.666000,135.501800],[34.704200,135.498600],[34.703100,135.495900],[34.702200,135.496800],[34.700523,135.494797],[34.703700,135.495600],[34.703100,135.495900]],{color:'#B0743F',weight:2,opacity:.45,dashArray:'6 6'}).addTo(map);
+L.polyline([[34.703100,135.495900],[34.430109,135.230360]],{color:'#4A5D52',weight:2,opacity:.45,dashArray:'6 6'}).addTo(map);
+
+STOPS.forEach(s=>{
+  const icon = L.divIcon({className:'', html:'<div class="pin'+(s.air?' air':'')+'">'+s.n+'</div>', iconSize:[26,26], iconAnchor:[13,13]});
+  L.marker(s.ll,{icon}).addTo(map)
+   .bindPopup('<b>'+s.n+'. '+s.name+'</b><br><span style="color:#6B6B66">'+s.when+'</span>');
+});
+
+map.fitBounds(L.latLngBounds(STOPS.map(s=>s.ll)),{padding:[38,38]});
+</script>
+</body>
+</html>
