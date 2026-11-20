@@ -196,7 +196,7 @@
     <p class="when">15:30 – 17:30</p>
     <p class="name">LUCUA / LUCUA 1100</p>
     <p class="desc">大阪駅楼上，10:00–21:00。年轻品牌和杂货多，两家店分别在駅的南北两侧，用站内连廊串起来。</p>
-    <div class="nav"><a href="https://www.google.com/maps/dir/?api=1&amp;travelmode=walking&amp;origin=34.700523,135.494797&amp;destination=34.703700,135.495600" target="_blank" rel="noopener">KITTE→LUCUA</a></div>
+    <div class="nav"><a href="https://www.google.com/maps/dir/?api=1&amp;travelmode=walking&amp;origin=34.700523,135.494797&amp;destination=34.703200,135.495700" target="_blank" rel="noopener">KITTE→LUCUA</a></div>
   </div>
 </div>
 
@@ -216,7 +216,7 @@
     <p class="when">18:40 – 19:00 取行李</p>
     <p class="name">回 Crosta 取行李 → 1 番线</p>
     <p class="desc">取完行李直接进改札，找 1 番线。关空快速每 15 分钟左右一班，19:00 前后上车，20:05 左右到关西空港。</p>
-    <div class="nav"><a href="https://www.google.com/maps/dir/?api=1&amp;travelmode=walking&amp;origin=34.703700,135.495600&amp;destination=34.703100,135.495900" target="_blank" rel="noopener">LUCUA→Crosta</a><a href="https://www.google.com/maps/dir/?api=1&amp;travelmode=transit&amp;origin=34.703100,135.495900&amp;destination=34.430109,135.230360" target="_blank" rel="noopener">大阪駅→关西空港</a></div>
+    <div class="nav"><a href="https://www.google.com/maps/dir/?api=1&amp;travelmode=walking&amp;origin=34.703200,135.495700&amp;destination=34.703100,135.495900" target="_blank" rel="noopener">LUCUA→Crosta</a><a href="https://www.google.com/maps/dir/?api=1&amp;travelmode=transit&amp;origin=34.703100,135.495900&amp;destination=34.430109,135.230360" target="_blank" rel="noopener">大阪駅→关西空港</a></div>
   </div>
 </div>
 
@@ -286,8 +286,8 @@ const STOPS = [
   {n:6,  name:'KITTE 2F · 物产',    ll:[34.700523,135.494797], air:false, when:'12:00–12:30'},
   {n:7,  name:'KITTE 4–5F · 午饭',  ll:[34.700523,135.494797], air:false, when:'12:30–14:00'},
   {n:8,  name:'KITTE 1–3F · 物贩',  ll:[34.700523,135.494797], air:false, when:'14:00–15:30'},
-  {n:9,  name:'LUCUA / LUCUA 1100', ll:[34.703700,135.495600], air:false, when:'15:30–17:30'},
-  {n:10, name:'LUCUA 10F · 晚饭',   ll:[34.703700,135.495600], air:false, when:'17:30–18:40'},
+  {n:9,  name:'LUCUA / LUCUA 1100', ll:[34.703200,135.495700], air:false, when:'15:30–17:30'},
+  {n:10, name:'LUCUA 10F · 晚饭',   ll:[34.703200,135.495700], air:false, when:'17:30–18:40'},
   {n:11, name:'取行李 → 1 番线',     ll:[34.703100,135.495900], air:true,  when:'18:40–19:00'},
   {n:12, name:'関西空港 第 1 ターミナル', ll:[34.430109,135.230360], air:true, when:'20:15 上 4F'}
 ];
@@ -297,7 +297,7 @@ L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png',{
   maxZoom:18, attribution:'国土地理院'
 }).addTo(map);
 
-L.polyline([[34.670193,135.508362],[34.666000,135.501800],[34.704200,135.498600],[34.703100,135.495900],[34.702200,135.496800],[34.700523,135.494797],[34.703700,135.495600],[34.703100,135.495900]],{color:'#B0743F',weight:2,opacity:.45,dashArray:'6 6'}).addTo(map);
+L.polyline([[34.670193,135.508362],[34.666000,135.501800],[34.704200,135.498600],[34.703100,135.495900],[34.702200,135.496800],[34.700523,135.494797],[34.703200,135.495700],[34.703100,135.495900]],{color:'#B0743F',weight:2,opacity:.45,dashArray:'6 6'}).addTo(map);
 L.polyline([[34.703100,135.495900],[34.430109,135.230360]],{color:'#4A5D52',weight:2,opacity:.45,dashArray:'6 6'}).addTo(map);
 
 STOPS.forEach(s=>{
