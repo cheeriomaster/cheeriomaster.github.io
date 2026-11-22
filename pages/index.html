@@ -22,19 +22,29 @@ body{
   line-height:1.6;padding:0 20px calc(48px + env(safe-area-inset-bottom));
 }
 .wrap{max-width:720px;margin:0 auto}
-header{padding:38px 0 18px}
+header{padding:36px 0 16px}
 h1{font-size:clamp(21px,5.4vw,28px);font-weight:600;letter-spacing:.01em;margin:0 0 6px}
 .brand{display:flex;align-items:center;gap:14px;margin-bottom:8px}
 .brand img{width:56px;height:56px;border-radius:50%;flex:0 0 auto}
 .brand h1{margin:0}
 .sub{color:var(--muted);font-size:14px;margin:0}
-.search{position:sticky;top:0;z-index:9;background:var(--paper);padding:14px 0 12px;border-bottom:1px solid var(--line)}
-input{
-  width:100%;padding:11px 14px;font-size:16px;border:1px solid var(--line);border-radius:10px;
-  background:#fff;color:var(--ink);outline:none;font-family:inherit
+
+nav.tabs{
+  position:sticky;top:0;z-index:9;background:var(--paper);
+  padding:12px 0 10px;border-bottom:1px solid var(--line);
+  display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;
 }
-input:focus{border-color:var(--accent)}
-h2{font-size:13px;font-weight:600;color:var(--muted);letter-spacing:.08em;margin:28px 0 10px}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs button{
+  flex:0 0 auto;appearance:none;border:1px solid var(--line);background:#fff;color:var(--muted);
+  font:inherit;font-size:13.5px;padding:7px 14px;border-radius:999px;cursor:pointer;
+  transition:background .15s,color .15s,border-color .15s;letter-spacing:.02em;
+}
+nav.tabs button.on{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:500}
+nav.tabs button:active{transform:scale(.98)}
+
+h2{font-size:13px;font-weight:600;color:var(--muted);letter-spacing:.08em;margin:26px 0 10px}
+section[hidden]{display:none}
 a.card{
   display:block;text-decoration:none;color:inherit;background:#fff;border:1px solid var(--line);
   border-radius:12px;padding:14px 16px;margin-bottom:10px;transition:border-color .15s, transform .15s
@@ -44,7 +54,6 @@ a.card:hover{border-color:var(--accent)}
 .t{font-size:16px;font-weight:600;display:flex;align-items:baseline;justify-content:space-between;gap:12px}
 .t span.n{font-size:12px;font-weight:400;color:var(--muted);flex:0 0 auto}
 .d{font-size:13.5px;color:var(--muted);margin-top:3px}
-.empty{color:var(--muted);font-size:14px;padding:18px 2px;display:none}
 footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--line);color:var(--muted);font-size:12.5px}
 </style>
 </head>
@@ -55,127 +64,120 @@ footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--line);color:v
     <img src="assets/mgo-logo.png" alt="Merry-Go-Around">
     <h1>Merry-Go-Around</h1>
   </div>
-  <p class="sub">所有挂在这儿的页面，一个门口全在。</p>
+  <p class="sub">所有挂在这儿的页面，一个门口全在。<span id="cnt"></span></p>
 </header>
 
-<div class="search"><input id="q" type="search" placeholder="搜名字，比如「展览」「日本」" autocomplete="off" enterkeyhint="search"></div>
+<nav class="tabs" id="tabs">
+  <button data-g="all" class="on">全部</button>
+  <button data-g="trip">这一趟</button>
+  <button data-g="often">常看的</button>
+  <button data-g="classics">读经</button>
+  <button data-g="notes">笔记文章</button>
+  <button data-g="tools">工具</button>
+</nav>
 
-<h2>常用</h2>
-<div class="list">
-  <a class="card" href="../exhibitions/" data-k="展览 美术馆 北京 地图 exhibition">
-    <div class="t">待看展览 · 北京<span class="n">/exhibitions/</span></div>
+<section data-group="trip">
+  <h2>这一趟</h2>
+  <a class="card" href="../japan-2026-11/">
+    <div class="t">日本家庭行 · 2026 年 11 月<span class="n">7 页</span></div>
+    <div class="d">11-13 到 11-21 的全部页面收在一个入口里；已结束，留档</div>
+  </a>
+</section>
+
+<section data-group="often">
+  <h2>常看的</h2>
+  <a class="card" href="../exhibitions/">
+    <div class="t">待看展览 · 北京<span class="n">周年常开</span></div>
     <div class="d">北京值得去的展，点开有地图，看过可以标掉</div>
   </a>
-  <a class="card" href="../huga/" data-k="胡嘎 游戏 卡牌 聚会 game">
-    <div class="t">胡嘎游戏<span class="n">/huga/</span></div>
+  <a class="card" href="../huga/">
+    <div class="t">胡嘎游戏<span class="n">聚会用</span></div>
     <div class="d">聚会上那副自创卡牌，网页版随手就能开局</div>
   </a>
-  <a class="card" href="../japan-trip-9c2f41/" data-k="日本 东京 河口湖 京都 大阪 行程 地图 travel">
-    <div class="t">东京 · 河口湖 · 京都大阪 九日<span class="n">/japan-trip-9c2f41/</span></div>
-    <div class="d">这趟家庭行的九个日子、三十二个地点，一天一页</div>
-  </a>
-  <a class="card" href="../kyoto-1118-4f8a2c/" data-k="京都 东寺 岚山 祐斋亭 常寂光寺 天龙寺 11-18 itinerary 导航 maps">
-    <div class="t">京都一日 · 11-18 东寺与岚山<span class="n">/kyoto-1118-4f8a2c/</span></div>
-    <div class="d">从东九条走到祐斋亭，每一站都带 Google Maps 导航按钮</div>
-  </a>
-  <a class="card" href="../kyoto-osaka-1119-c4a1e7/" data-k="京都 大阪 伏见稻荷 东福寺 清水寺 二年坂 三年坂 道顿堀 11-19 map 地图 导航">
-    <div class="t">京都 → 大阪 · 11-19 位置图<span class="n">/kyoto-osaka-1119-c4a1e7/</span></div>
-    <div class="d">一天八个落脚点按顺序编号，每一步都能点进 Google Maps 看怎么走</div>
-  </a>
-  <a class="card" href="../nara-1120-8d3e21/" data-k="奈良 东大寺 大佛殿 二月堂 春日大社 兴福寺 鹿 近铁 11-20 map 地图 导航 nara">
-    <div class="t">大阪 ⇄ 奈良 · 11-20 位置图<span class="n">/nara-1120-8d3e21/</span></div>
-    <div class="d">兴福寺、奈良公园看鹿、东大寺、二月堂、若草山、春日大社，近铁往返带导航</div>
-  </a>
-  <a class="card" href="../osaka-mall-floors/" data-k="大阪 梅田 商场 楼层 LUCUA KITTE 品牌 餐厅 购物 floor shop">
-    <div class="t">大阪站三家商场 · 每层有哪些牌子<span class="n">/osaka-mall-floors/</span></div>
-    <div class="d">LUCUA、LUCUA 1100、KITTE 逐层品牌清单，带搜索，找餐厅和伴手礼都能查</div>
-  </a>
-  <a class="card" href="../osaka-1121-b7d2e1/" data-k="大阪 梅田 大阪駅 大丸 KITTE LUCUA 关西空港 行李 11-21 回国 购物 map 地图 导航">
-    <div class="t">大阪站购物 · 11-21 去机场<span class="n">/osaka-1121-b7d2e1/</span></div>
-    <div class="d">大丸、KITTE、LUCUA 三家顺着逛，行李存大阪站，19:00 上车去关西空港</div>
-  </a>
-  <a class="card" href="../tokyo-day-1115/" data-k="东京 博物馆 一日 地铁 线路 卢浮宫 新美术馆 上野 tokyo">
-    <div class="t">东京博物馆一日 · 11-15<span class="n">/tokyo-day-1115/</span></div>
-    <div class="d">MISOJYU 早餐、国立新美术馆、上野博物馆，带详细地铁换乘和门票</div>
-  </a>
-  <a class="card" href="../benyuan-26/" data-k="本源 演训 线上 26期 十三节 动作 笔记 benyuan">
-    <div class="t">本源线上演训 · 二十六期<span class="n">/benyuan-26/</span></div>
-    <div class="d">十三节课的动作与要点，一节一页排着</div>
-  </a>
-    <a class="card" href="../mencius-jinxin-5e17b3/" data-k="孟子 尽心 经典 章指 解读 儒 mencius">
-    <div class="t">孟子 · 尽心<span class="n">/mencius-jinxin-5e17b3/</span></div>
-    <div class="d">八十四章原文，附东汉赵岐章指与逐章解读</div>
-  </a>
-<a class="card" href="../burn-notes/" data-k="燃烧吧能量 读书笔记 书 book burn 哈扎人">
-    <div class="t">《燃烧吧，能量》读书笔记<span class="n">/burn-notes/</span></div>
-    <div class="d">各章要点、哈扎人的五个文化冲突点、两页书的划线</div>
-  </a>
-</div>
+</section>
 
-<h2>文章</h2>
-<div class="list">
-  <a class="card" href="../essay-death-anxiety/" data-k="死亡焦虑 高效 有序 文章 essay">
-    <div class="t">高效有序，只是对死亡焦虑的防御<span class="n">/essay-death-anxiety/</span></div>
-    <div class="d">那篇写「效率」的文章，含配图</div>
+<section data-group="classics">
+  <h2>读经</h2>
+  <a class="card" href="../mencius-jinxin-5e17b3/">
+    <div class="t">孟子 · 尽心<span class="n">八十四章</span></div>
+    <div class="d">原文、东汉赵岐章指、逐章解读，13.44 另附南师讲记</div>
   </a>
-  <a class="card" href="../gzh-token-8b41d6/" data-k="token 澡堂 迷思 公众号 排版 gzh">
-    <div class="t">为什么你的 Token 总是不够用？<span class="n">/gzh-token-8b41d6/</span></div>
-    <div class="d">澡堂迷思系列，公众号排版预览</div>
-  </a>
-  <a class="card" href="../agents-judgment-calls-9f3a2c/" data-k="anthropic 论文 智能体 agent 判断 翻译 paper">
-    <div class="t">AI 智能体如何影响专家的判断决定<span class="n">/agents-judgment-calls-9f3a2c/</span></div>
-    <div class="d">Anthropic 那篇论文的逐段中译</div>
-  </a>
-</div>
-
-<h2>学习与工作</h2>
-<div class="list">
-  <a class="card" href="../benyuan-7c3d19/" data-k="本源 校身 精研 杭州 十天 动作 笔记 benyuan">
-    <div class="t">本源校身精研 · 杭州十天<span class="n">/benyuan-7c3d19/</span></div>
-    <div class="d">二十六期的动作都在，按天排好</div>
-  </a>
-  <a class="card" href="../heartsutra/" data-k="心经 般若 佛经 汉译 heartsutra">
-    <div class="t">般若波罗蜜多心经 · 汉译逐词<span class="n">/heartsutra/</span></div>
+  <a class="card" href="../heartsutra/">
+    <div class="t">般若波罗蜜多心经 · 汉译逐词<span class="n">对照读</span></div>
     <div class="d">一句一句对着看，词和义都在旁边</div>
   </a>
-  <a class="card" href="../cola-card-7d3e42/" data-k="cola card 产品 文档 随身 终端">
-    <div class="t">Cola Card · 随身终端 产品文档<span class="n">/cola-card-7d3e42/</span></div>
-    <div class="d">那块小卡片的按键逻辑与交互设计</div>
-  </a>
-  <a class="card" href="../quanjing-3d7e91/" data-k="拳经 拳意述真 形意拳 孙禄堂 郭云深 九要论 读书笔记 quanjing">
-    <div class="t">《拳意述真》里的《拳经》<span class="n">/quanjing-3d7e91/</span></div>
+  <a class="card" href="../quanjing-3d7e91/">
+    <div class="t">《拳意述真》里的《拳经》<span class="n">索引</span></div>
     <div class="d">三十处引文排成表，七句是骨头；拳经不是九要论</div>
   </a>
-  <a class="card" href="../zhuzi-jiaxun-7c2b91/" data-k="朱子治家格言 朱子家训 朱柏庐 朱用纯 家训 蒙学 jiaxun">
-    <div class="t">朱子治家格言<span class="n">/zhuzi-jiaxun-7c2b91/</span></div>
-    <div class="d">全文五百一十六字，分六节；难字与旧语都有小注</div>
+  <a class="card" href="../zhuzi-jiaxun-7c2b91/">
+    <div class="t">朱子治家格言<span class="n">全文</span></div>
+    <div class="d">五百一十六字分六节，难字旧语有小注；作者不是朱熹</div>
   </a>
-</div>
+</section>
 
-<p class="empty" id="empty">没找到。换个词试试？</p>
+<section data-group="notes">
+  <h2>笔记与文章</h2>
+  <a class="card" href="../burn-notes/">
+    <div class="t">《燃烧吧，能量》读书笔记<span class="n">已读完</span></div>
+    <div class="d">各章要点、哈扎人的五个文化冲突点、两页书的划线</div>
+  </a>
+  <a class="card" href="../benyuan-7c3d19/">
+    <div class="t">本源校身精研 · 杭州十天<span class="n">第一段</span></div>
+    <div class="d">十月上旬杭州精研，按天排好的动作与要点</div>
+  </a>
+  <a class="card" href="../benyuan-26/">
+    <div class="t">本源线上演训 · 二十六期<span class="n">第二段</span></div>
+    <div class="d">十月十四日到十一月十一日，十三节课</div>
+  </a>
+  <a class="card" href="../essay-death-anxiety/">
+    <div class="t">高效有序，只是对死亡焦虑的防御<span class="n">文章</span></div>
+    <div class="d">那篇写「效率」的文章，含配图</div>
+  </a>
+  <a class="card" href="../gzh-token-8b41d6/">
+    <div class="t">为什么你的 Token 总是不够用？<span class="n">公众号</span></div>
+    <div class="d">澡堂迷思系列，公众号排版预览</div>
+  </a>
+  <a class="card" href="../agents-judgment-calls-9f3a2c/">
+    <div class="t">AI 智能体如何影响专家的判断决定<span class="n">译文</span></div>
+    <div class="d">Anthropic 那篇论文的逐段中译</div>
+  </a>
+</section>
+
+<section data-group="tools">
+  <h2>工具</h2>
+  <a class="card" href="../cola-card-7d3e42/">
+    <div class="t">Cola Card · 随身终端 产品文档<span class="n">设计稿</span></div>
+    <div class="d">那块小卡片的按键逻辑与交互设计</div>
+  </a>
+</section>
 
 <footer>存下来最省事：用 Safari 打开这一页 → 分享 → 添加到主屏幕，以后就是一个图标。</footer>
 </div>
 
 <script>
 (function(){
-  var q=document.getElementById('q'), empty=document.getElementById('empty');
-  var cards=[].slice.call(document.querySelectorAll('a.card'));
-  var groups=[].slice.call(document.querySelectorAll('h2'));
-  q.addEventListener('input', function(){
-    var s=q.value.trim().toLowerCase(); var shown=0;
-    cards.forEach(function(c){
-      var hay=(c.textContent+' '+(c.dataset.k||'')).toLowerCase();
-      var hit=!s||hay.indexOf(s)>-1;
-      c.style.display=hit?'':'none'; if(hit)shown++;
+  var tabs=document.getElementById('tabs').querySelectorAll('button');
+  var secs=document.querySelectorAll('section');
+  var cnt=document.getElementById('cnt');
+  function apply(g){
+    var n=0;
+    secs.forEach(function(s){
+      var hit=(g==='all'||s.dataset.group===g);
+      s.hidden=!hit;
+      if(hit)n+=s.querySelectorAll('a.card').length;
     });
-    groups.forEach(function(h){
-      var n=h.nextElementSibling, any=false;
-      [].slice.call(n.children).forEach(function(c){ if(c.style.display!=='none')any=true; });
-      h.style.display=any?'':'none';
+    cnt.textContent=n+' 页';
+  }
+  tabs.forEach(function(b){
+    b.addEventListener('click',function(){
+      tabs.forEach(function(x){x.classList.remove('on')});
+      b.classList.add('on');
+      apply(b.dataset.g);
+      window.scrollTo({top:0,behavior:'smooth'});
     });
-    empty.style.display=shown?'none':'block';
   });
+  apply('all');
 })();
 </script>
 </body>
